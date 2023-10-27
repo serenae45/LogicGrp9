@@ -67,14 +67,14 @@ def example_theory():
     return E
 
 # Create propositions for each position (i, j) that corresponds to the correct tile number
-n = 3  # Replace with the size of your grid
-correct_tile_numbers = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]  # Replace with the correct tile numbers
+n = 9
+tile_numbers = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]  
 
 propositions = []
 
 for i in range(n):
     for j in range(n):
-        tile_number = correct_tile_numbers[i][j]
+        tile_number = tile_numbers[i][j]
         propositions.append(BasicPropositions(f"X{i}{j}", i, j))
 
 
