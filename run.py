@@ -13,8 +13,9 @@ E = Encoding()
 @proposition(E)
 class BasicPropositions:
 
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, i, j):
+        self.i = i
+        self.j = j
 
     def __repr__(self):
         return f"A.{self.data}"
@@ -46,6 +47,25 @@ x = FancyPropositions("x")
 y = FancyPropositions("y")
 z = FancyPropositions("z")
 
+# slide puzzle propositions 
+@proposition(E)
+class assigned(num, pos): # assigns number to a position 
+    def __init__(self, num, pos):
+        self.num = num
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"({self.num} @ {self.pos})"
+
+@proposition(E) 
+class correct(num, pos): # checks if a number is at the right position 
+    def __init__(self, num, pos):
+        self.num = num
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"({self.num} is at the correct position)"
+
 
 # Build an example full theory for your setting and return it.
 #
@@ -64,6 +84,17 @@ def example_theory():
     constraint.add_exactly_one(E, a, b, c)
 
     return E
+
+# Create propositions for each position (i, j) that corresponds to the correct tile number
+n = 9
+tile_numbers = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]  
+
+propositions = []
+
+for i in range(n):
+    for j in range(n):
+        tile_number = tile_numbers[i][j]
+        propositions.append(BasicPropositions(f"X{i}{j}", i, j))
 
 
 if __name__ == "__main__":
