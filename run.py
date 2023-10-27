@@ -46,6 +46,28 @@ x = FancyPropositions("x")
 y = FancyPropositions("y")
 z = FancyPropositions("z")
 
+# slide puzzle propositions 
+@proposition(E)
+class assigned(num, pos): # assigns number to a position 
+    def __init__(self, num, pos):
+        self.num = num
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"({self.num} @ {self.pos})"
+
+@proposition(E) 
+class correct(num, pos): # checks if a number is at the right position 
+    def __init__(self, num, pos):
+        self.num = num
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"({self.num} is at the correct position)"
+    
+@proposition(E)
+
+
 
 # Build an example full theory for your setting and return it.
 #
