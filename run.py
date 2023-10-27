@@ -9,18 +9,6 @@ config.sat_backend = "kissat"
 # Encoding that will store all of your constraints
 E = Encoding()
 
-# To create propositions, create classes for them first, annotated with "@proposition" and the Encoding
-@proposition(E)
-class BasicPropositions:
-
-    def __init__(self, i, j):
-        self.i = i
-        self.j = j
-
-    def __repr__(self):
-        return f"A.{self.data}"
-
-
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
 # for propositions within that class. For example, you can enforce that "at least one" of the propositions
 # that are instances of this class must be true by using a @constraint decorator.
@@ -35,17 +23,6 @@ class FancyPropositions:
 
     def __repr__(self):
         return f"A.{self.data}"
-
-# Call your variables whatever you want
-a = BasicPropositions("a")
-b = BasicPropositions("b")   
-c = BasicPropositions("c")
-d = BasicPropositions("d")
-e = BasicPropositions("e")
-# At least one of these will be true
-x = FancyPropositions("x")
-y = FancyPropositions("y")
-z = FancyPropositions("z")
 
 # slide puzzle propositions 
 @proposition(E)
@@ -74,7 +51,7 @@ class blank(i, j): # checks if a position is blank
         self.j = j
 
     def __str__(self) -> str:
-        return f"({self.i}, {self.j} is blank.)"
+        return f"({self.i}, {self.j} is blank."
 
 
 # assign propositions to variables 
@@ -86,8 +63,6 @@ for i in board:
         assigned_props.append(Assigned(j, [i,j])) # not sure if the indexing is right here 
         
     
-
-
 # Build an example full theory for your setting and return it.
 #
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
@@ -105,17 +80,6 @@ def example_theory():
     constraint.add_exactly_one(E, a, b, c)
 
     return E
-
-# Create propositions for each position (i, j) that corresponds to the correct tile number
-n = 9
-tile_numbers = [[1, 2, 3], [4, 5, 6], [7, 8, "empty_box"]]  
-
-propositions = []
-
-for i in range(n):
-    for j in range(n):
-        tile_number = tile_numbers[i][j]
-        propositions.append(BasicPropositions(f"X{i}{j}", i, j))
 
 
 if __name__ == "__main__":
