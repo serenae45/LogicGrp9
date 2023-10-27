@@ -13,8 +13,9 @@ E = Encoding()
 @proposition(E)
 class BasicPropositions:
 
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, i, j):
+        self.i = i
+        self.j = j
 
     def __repr__(self):
         return f"A.{self.data}"
@@ -64,6 +65,17 @@ def example_theory():
     constraint.add_exactly_one(E, a, b, c)
 
     return E
+
+# Create propositions for each position (i, j) that corresponds to the correct tile number
+n = 3  # Replace with the size of your grid
+correct_tile_numbers = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]  # Replace with the correct tile numbers
+
+propositions = []
+
+for i in range(n):
+    for j in range(n):
+        tile_number = correct_tile_numbers[i][j]
+        propositions.append(BasicPropositions(f"X{i}{j}", i, j))
 
 
 if __name__ == "__main__":
