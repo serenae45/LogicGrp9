@@ -75,15 +75,24 @@ class blank(i, j): # checks if a position is blank
 
     def __str__(self) -> str:
         return f"({self.i}, {self.j} is blank.)"
+    
+@proposition(E)
+class can_move(tile, pos): # checks if tile can move into a position (position has to be blank)
+    def __init__(self, tile, pos):
+        self.tile = tile
+        self.pos = pos
+    
+    def __str__(self) -> str:
+        return f"({self.tile} can move into {self.pos}.)"
 
 
 # assign propositions to variables 
 board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
 assigned_props = []
 
-for i in board:
-    for j in i: 
-        assigned_props.append(Assigned(j, [i,j])) # not sure if the indexing is right here 
+for i in range(3):
+    for j in range(3): 
+        assigned_props.append(assigned(board[i][j], [i,j])) # not sure if the indexing is right here 
         
     
 
