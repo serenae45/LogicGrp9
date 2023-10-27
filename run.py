@@ -64,9 +64,6 @@ class correct(num, pos): # checks if a number is at the right position
 
     def __str__(self) -> str:
         return f"({self.num} is at the correct position)"
-    
-@proposition(E)
-
 
 
 # Build an example full theory for your setting and return it.
