@@ -37,7 +37,7 @@ class FancyPropositions:
         return f"A.{self.data}"
 
 # Call your variables whatever you want
-a = BasicPropositions("a")
+a = assigned("a","b")
 b = BasicPropositions("b")   
 c = BasicPropositions("c")
 d = BasicPropositions("d")
@@ -49,32 +49,31 @@ z = FancyPropositions("z")
 
 # slide puzzle propositions 
 @proposition(E)
-class assigned(num, pos): # checks if number is assigned to a position 
-    def __init__(self, num, pos):
-        self.num = num
+class assigned(tile, pos): # checks if number is assigned to a position 
+    def __init__(self, tile, pos):
+        self.tile = tile
         self.pos = pos
 
     def __str__(self) -> str:
-        return f"({self.num} @ {self.pos})"
+        return f"({self.tile} @ {self.pos})"
 
 @proposition(E) 
-class correct(num, pos): # checks if a number is at the right position 
-    def __init__(self, num, pos):
-        self.num = num
+class correct(tile, pos): # checks if a number is at the right position 
+    def __init__(self, tile, pos):
+        self.tile = tile
         self.pos = pos
 
     def __str__(self) -> str:
-        return f"({self.num} is at the correct position)"
+        return f"({self.tile} is at the correct position)"
     
 @constraint.exactly_one(E) 
 @proposition(E) 
-class blank(i, j): # checks if a position is blank 
-    def __init__(self, i, j):
-        self.i = i
-        self.j = j
+class blank(pos): # checks if a position is blank 
+    def __init__(self, pos):
+        self.pos = pos
 
     def __str__(self) -> str:
-        return f"({self.i}, {self.j} is blank.)"
+        return f"({self.pos} is blank.)"
     
 @proposition(E)
 class can_move(tile, pos): # checks if tile can move into a position (position has to be blank)
@@ -84,17 +83,23 @@ class can_move(tile, pos): # checks if tile can move into a position (position h
     
     def __str__(self) -> str:
         return f"({self.tile} can move into {self.pos}.)"
+    
+
 
 
 # assign propositions to variables 
 board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
 assigned_props = []
 
-for i in range(3):
-    for j in range(3): 
-        assigned_props.append(assigned(board[i][j], [i,j])) # not sure if the indexing is right here 
-        
-    
+for t in TILES:
+    for p in BOARD:
+        assigned_props.append(assigned(t, p))
+
+correct_props = []
+
+for t in TILES:
+    for p in BOARD:
+        correct_props.append(correct(t, p))
 
 
 # Build an example full theory for your setting and return it.
@@ -114,17 +119,6 @@ def example_theory():
     constraint.add_exactly_one(E, a, b, c)
 
     return E
-
-# Create propositions for each position (i, j) that corresponds to the correct tile number
-n = 9
-tile_numbers = [[1, 2, 3], [4, 5, 6], [7, 8, "empty_box"]]  
-
-propositions = []
-
-for i in range(n):
-    for j in range(n):
-        tile_number = tile_numbers[i][j]
-        propositions.append(BasicPropositions(f"X{i}{j}", i, j))
 
 
 if __name__ == "__main__":
