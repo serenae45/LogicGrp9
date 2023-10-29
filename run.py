@@ -2,6 +2,11 @@
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
 
+from directions import DIRECTIONS
+from board import BOARD
+from tiles import TILES
+
+
 # These two lines make sure a faster SAT solver is used.
 from nnf import config
 config.sat_backend = "kissat"
@@ -76,13 +81,21 @@ class blank(pos): # checks if a position is blank
         return f"({self.pos} is blank.)"
     
 @proposition(E)
-class can_move(tile, pos): # checks if tile can move into a position (position has to be blank)
-    def __init__(self, tile, pos):
-        self.tile = tile
+class above(): # checks if a position [p][q] above the blank tile is valid
+    def __init__(self, pos):
         self.pos = pos
+
+    def __str__(self) -> str:
+        return f"(The position above the blank is a valid position on the board.)"
+
+@proposition(E)
+class can_swap(pos, d): # checks if tile can move into a position (position has to be blank)
+    def __init__(self, pos, d):
+        self.pos = pos
+        self.d = d
     
     def __str__(self) -> str:
-        return f"({self.tile} can move into {self.pos}.)"
+        return f"({self.pos} can move {self.d}.)"
     
 
 
@@ -92,14 +105,23 @@ board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board
 assigned_props = []
 
 for t in TILES:
-    for p in BOARD:
-        assigned_props.append(assigned(t, p))
+    for pos in BOARD:
+        assigned_props.append(assigned(t, pos))
 
 correct_props = []
 
 for t in TILES:
-    for p in BOARD:
-        correct_props.append(correct(t, p))
+    for pos in BOARD:
+        correct_props.append(correct(t, pos))
+
+blank_props = []
+
+for pos in BOARD:
+    blank_props.append(blank(pos))
+
+above_props = []
+for pos in BOARD:
+        above_props.append(above(pos))
 
 
 # Build an example full theory for your setting and return it.
@@ -118,6 +140,16 @@ def example_theory():
     # for every instance of BasicPropositions, but you want to enforce it for a, b, and c.:
     constraint.add_exactly_one(E, a, b, c)
 
+    return E
+
+def build_theory():
+    # The initial tile has to be a blank in order to swap with a target tile
+    for pos in BOARD:
+        E.add_constraint(can_swap(pos, d) for d in DIRECTIONS >> blank(pos))
+
+    # A tile can only swap with a position above, below, or beside it that is on the board
+    for pos in BOARD:
+        E.add_constraint(can_swap(pos, d) for d in DIRECTIONS >> (above(pos) | below(pos) | left(pos) | right(pos)))
     return E
 
 
