@@ -1,6 +1,7 @@
 
-from bauhaus import Encoding, proposition, constraint
+from bauhaus import Encoding, proposition, constraint, Or, And
 from bauhaus.utils import count_solutions, likelihood
+
 
 from directions import DIRECTIONS
 from board import BOARD
@@ -42,7 +43,7 @@ class FancyPropositions:
         return f"A.{self.data}"
 
 # Call your variables whatever you want
-a = assigned("a","b")
+a = assigned("a")
 b = BasicPropositions("b")   
 c = BasicPropositions("c")
 d = BasicPropositions("d")
@@ -54,7 +55,7 @@ z = FancyPropositions("z")
 
 # slide puzzle propositions 
 @proposition(E)
-class assigned(tile, pos): # checks if number is assigned to a position 
+class assigned: # checks if number is assigned to a position 
     def __init__(self, tile, pos):
         self.tile = tile
         self.pos = pos
@@ -63,7 +64,7 @@ class assigned(tile, pos): # checks if number is assigned to a position
         return f"({self.tile} @ {self.pos})"
 
 @proposition(E) 
-class correct(tile, pos): # checks if a number is at the right position 
+class correct: # checks if a number is at the right position 
     def __init__(self, tile, pos):
         self.tile = tile
         self.pos = pos
@@ -73,7 +74,7 @@ class correct(tile, pos): # checks if a number is at the right position
     
 @constraint.exactly_one(E) 
 @proposition(E) 
-class blank(pos): # checks if a position is blank 
+class blank: # checks if a position is blank 
     def __init__(self, pos):
         self.pos = pos
 
@@ -81,7 +82,7 @@ class blank(pos): # checks if a position is blank
         return f"({self.pos} is blank.)"
     
 @proposition(E)
-class above(): # checks if a position [p][q] above the blank tile is valid
+class above: # checks if a position [p][q] above the blank tile is valid
     def __init__(self, pos):
         self.pos = pos
 
@@ -89,7 +90,7 @@ class above(): # checks if a position [p][q] above the blank tile is valid
         return f"(The position above the blank is a valid position on the board.)"
 
 @proposition(E)
-class can_swap(pos, d): # checks if tile can move into a position (position has to be blank)
+class can_swap: # checks if tile can move into a position (position has to be blank)
     def __init__(self, pos, d):
         self.pos = pos
         self.d = d
@@ -102,26 +103,26 @@ class can_swap(pos, d): # checks if tile can move into a position (position has 
 
 # assign propositions to variables 
 board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
-assigned_props = []
 
+assigned_props = []
 for t in TILES:
     for pos in BOARD:
         assigned_props.append(assigned(t, pos))
 
 correct_props = []
-
 for t in TILES:
     for pos in BOARD:
         correct_props.append(correct(t, pos))
 
 blank_props = []
-
 for pos in BOARD:
     blank_props.append(blank(pos))
 
 above_props = []
-for pos in BOARD:
-        above_props.append(above(pos))
+length = len(BOARD)
+for i in range(length):
+        if i >= 3:
+            above_props.append(above(BOARD[i-3]))
 
 
 # Build an example full theory for your setting and return it.
