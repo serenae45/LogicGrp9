@@ -1,5 +1,5 @@
 
-from bauhaus import Encoding, proposition, constraint, Or, And
+from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
 
 
@@ -15,6 +15,17 @@ config.sat_backend = "kissat"
 # Encoding that will store all of your constraints
 E = Encoding()
 
+class Hashable:
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, __value: object) -> bool:
+        return hash(self) == hash(__value)
+
+    def __repr__(self):
+        return str(self)
+
+'''
 # To create propositions, create classes for them first, annotated with "@proposition" and the Encoding
 @proposition(E)
 class BasicPropositions:
@@ -25,7 +36,6 @@ class BasicPropositions:
 
     def __repr__(self):
         return f"A.{self.data}"
-
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
 # for propositions within that class. For example, you can enforce that "at least one" of the propositions
@@ -42,8 +52,13 @@ class FancyPropositions:
     def __repr__(self):
         return f"A.{self.data}"
 
+'''
+
+
+
+'''
 # Call your variables whatever you want
-a = assigned("a")
+a = BasicPropositions("a")
 b = BasicPropositions("b")   
 c = BasicPropositions("c")
 d = BasicPropositions("d")
@@ -52,10 +67,12 @@ e = BasicPropositions("e")
 x = FancyPropositions("x")
 y = FancyPropositions("y")
 z = FancyPropositions("z")
+'''
+
 
 # slide puzzle propositions 
 @proposition(E)
-class assigned: # checks if number is assigned to a position 
+class assigned(Hashable): # checks if number is assigned to a position 
     def __init__(self, tile, pos):
         self.tile = tile
         self.pos = pos
@@ -64,7 +81,7 @@ class assigned: # checks if number is assigned to a position
         return f"({self.tile} @ {self.pos})"
 
 @proposition(E) 
-class correct: # checks if a number is at the right position 
+class correct(Hashable): # checks if a number is at the right position 
     def __init__(self, tile, pos):
         self.tile = tile
         self.pos = pos
@@ -74,7 +91,7 @@ class correct: # checks if a number is at the right position
     
 @constraint.exactly_one(E) 
 @proposition(E) 
-class blank: # checks if a position is blank 
+class blank(Hashable): # checks if a position is blank 
     def __init__(self, pos):
         self.pos = pos
 
@@ -82,7 +99,7 @@ class blank: # checks if a position is blank
         return f"({self.pos} is blank.)"
     
 @proposition(E)
-class above: # checks if a position [p][q] above the blank tile is valid
+class above(Hashable): # checks if a position [p][q] above the blank tile is valid
     def __init__(self, pos):
         self.pos = pos
 
@@ -90,7 +107,7 @@ class above: # checks if a position [p][q] above the blank tile is valid
         return f"(The position above the blank is a valid position on the board.)"
 
 @proposition(E)
-class can_swap: # checks if tile can move into a position (position has to be blank)
+class can_swap(Hashable): # checks if tile can move into a position (position has to be blank)
     def __init__(self, pos, d):
         self.pos = pos
         self.d = d
@@ -124,7 +141,7 @@ for i in range(length):
         if i >= 3:
             above_props.append(above(BOARD[i-3]))
 
-
+'''
 # Build an example full theory for your setting and return it.
 #
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
@@ -143,6 +160,8 @@ def example_theory():
 
     return E
 
+'''
+
 def build_theory():
     # The initial tile has to be a blank in order to swap with a target tile
     for pos in BOARD:
@@ -156,7 +175,7 @@ def build_theory():
 
 if __name__ == "__main__":
 
-    T = example_theory()
+    T = build_theory()
     # Don't compile until you're finished adding all your constraints!
     T = T.compile()
     # After compilation (and only after), you can check some of the properties

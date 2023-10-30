@@ -9,7 +9,3 @@ BOARD = [
     '[2][1]',
     '[2][2]'
 ]
-
-for pos in BOARD:
-    if pos != '[0][0]':
-        print(pos-1)
