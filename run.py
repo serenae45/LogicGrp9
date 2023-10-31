@@ -51,7 +51,7 @@ class blank(i, j): # checks if a position is blank
         self.j = j
 
     def __str__(self) -> str:
-        return f"({self.i}, {self.j} is blank."
+        return f"({self.i}, {self.j} is blank.)"
 
 
 # assign propositions to variables 
@@ -63,6 +63,8 @@ for i in board:
         assigned_props.append(Assigned(j, [i,j])) # not sure if the indexing is right here 
         
     
+
+
 # Build an example full theory for your setting and return it.
 #
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).

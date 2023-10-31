@@ -47,12 +47,11 @@ def swap(board, current_pos, direction):
             moves.append("left")
             return board, current_pos
         return "Error: The current number is either in the left most position and cannot swap, or the target position is not an empty box"
+    # we may want to move this to another function that checks all of the propositions, but I put it here for now.
     if board == winning_board:
-        print("The slide puzzle has now been solved")
+        print("The slide puzzle has now been solved") 
     return "Error: the direction entered is not an acceptible move."
 
-print(current_pos)
 board, current_pos = swap(board, current_pos, "up")
-print(board)
-print(current_pos)
+print("board:", board)
 print("moves:", moves)
