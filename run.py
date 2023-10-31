@@ -196,7 +196,7 @@ def build_theory():
 
     # Check if the tile above, below, left, or right is a valid position 
     for pos in BOARD:
-
+        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Above(pos) >> IsOnBoard(pos) | Below(pos) >> IsOnBoard(pos)  Left(pos) >> IsOnBoard(pos) | Right(pos) >> IsOnBoard(pos))
 
 if __name__ == "__main__":
 
