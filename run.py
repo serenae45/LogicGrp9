@@ -2,6 +2,12 @@
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
 
+
+from directions import DIRECTIONS
+from board import BOARD
+from tiles import TILES
+
+
 # These two lines make sure a faster SAT solver is used.
 from nnf import config
 config.sat_backend = "kissat"
@@ -9,6 +15,17 @@ config.sat_backend = "kissat"
 # Encoding that will store all of your constraints
 E = Encoding()
 
+class Hashable:
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, __value: object) -> bool:
+        return hash(self) == hash(__value)
+
+    def __repr__(self):
+        return str(self)
+
+'''
 # To create propositions, create classes for them first, annotated with "@proposition" and the Encoding
 @proposition(E)
 class BasicPropositions:
@@ -19,7 +36,6 @@ class BasicPropositions:
 
     def __repr__(self):
         return f"A.{self.data}"
-
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
 # for propositions within that class. For example, you can enforce that "at least one" of the propositions
@@ -36,6 +52,11 @@ class FancyPropositions:
     def __repr__(self):
         return f"A.{self.data}"
 
+'''
+
+
+
+'''
 # Call your variables whatever you want
 a = BasicPropositions("a")
 b = BasicPropositions("b")   
@@ -46,55 +67,110 @@ e = BasicPropositions("e")
 x = FancyPropositions("x")
 y = FancyPropositions("y")
 z = FancyPropositions("z")
+'''
+
 
 # slide puzzle propositions 
 @proposition(E)
-class assigned(num, pos): # checks if number is assigned to a position 
-    def __init__(self, num, pos):
-        self.num = num
-        self.pos = pos
-
-    def __str__(self) -> str:
-        return f"({self.num} @ {self.pos})"
-
-@proposition(E) 
-class correct(num, pos): # checks if a number is at the right position 
-    def __init__(self, num, pos):
-        self.num = num
-        self.pos = pos
-
-    def __str__(self) -> str:
-        return f"({self.num} is at the correct position)"
-    
-@constraint.exactly_one(E) 
-@proposition(E) 
-class blank(i, j): # checks if a position is blank 
-    def __init__(self, i, j):
-        self.i = i
-        self.j = j
-
-    def __str__(self) -> str:
-        return f"({self.i}, {self.j} is blank.)"
-    
-@proposition(E)
-class can_move(tile, pos): # checks if tile can move into a position (position has to be blank)
+class Assigned(Hashable): # checks if number is assigned to a position 
     def __init__(self, tile, pos):
         self.tile = tile
         self.pos = pos
+
+    def __str__(self) -> str:
+        return f"({self.tile} @ {self.pos})"
+
+@proposition(E) 
+class Correct(Hashable): # checks if a number is at the right position 
+    def __init__(self, tile, pos):
+        self.tile = tile
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"({self.tile} is at the correct position)"
+    
+@constraint.exactly_one(E) 
+@proposition(E) 
+class Blank(Hashable): # checks if a position is blank 
+    def __init__(self, pos):
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"({self.pos} is blank.)"
+    
+@proposition(E)
+class Above(Hashable): # checks if a position [p][q] above the blank tile is valid
+    def __init__(self, pos):
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"(The position above the blank is a valid position on the board.)"
+
+@proposition(E)   
+class Below(Hashable): # checks if a position [p][q] below the blank tile is valid
+    def __init__(self, pos) :
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"(The position below the blank is a valid position on the board.)"
+@proposition(E)
+class Left(Hashable): # checks if a position [p][q] to the left of blank tile is valid
+    def __init__(self, pos) :
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"(The position to the left of blank is a valid position on the board.)"
+
+@proposition(E)
+class Right(Hashable): # checks if a position [p][q] tot the right of the blank tile is valid
+    def __init__(self) -> None:
+        self.pos = pos
+
+    def __str__(self) -> str:
+        return f"(The position to the right of blank is a valid position on the board.)"
+@proposition(E)
+
+class CanSwap(Hashable): # checks if tile can move into a position (position has to be blank)
+    def __init__(self, pos, d):
+        self.pos = pos
+        self.d = d
     
     def __str__(self) -> str:
-        return f"({self.tile} can move into {self.pos}.)"
-
+        return f"({self.pos} can move {self.d}.)"
+    
 @proposition(E)
 class on_board(pos): # checks if position is on the board (valid position to move into)
     def __init__(self, pos):
         self.pos = pos
 
     def __str__(self) -> str:
-        return f"({self.pos} is on the board)" 
-    
+        return f"({self.pos} is a valid position.)"
+        
 
+# assign propositions to variables 
+board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
 
+assigned_props = []
+for t in TILES:
+    for pos in BOARD:
+        assigned_props.append(Assigned(t, pos))
+
+correct_props = []
+for t in TILES:
+    for pos in BOARD:
+        correct_props.append(Correct(t, pos))
+
+blank_props = []
+for pos in BOARD:
+    blank_props.append(Blank(pos))
+
+above_props = []
+length = len(BOARD)
+for i in range(length):
+        if i >= 3:
+            above_props.append(Above(BOARD[i-3]))
+
+'''
 # Build an example full theory for your setting and return it.
 #
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
@@ -113,24 +189,38 @@ def example_theory():
 
     return E
 
-# Create propositions for each position (i, j) that corresponds to the correct tile number
-n = 9
-tile_numbers = [[1, 2, 3], [4, 5, 6], [7, 8, "empty_box"]]  
-
-propositions = []
-
-for i in range(n):
-    for j in range(n):
-        tile_number = tile_numbers[i][j]
-        propositions.append(BasicPropositions(f"X{i}{j}", i, j))
+'''
 
 def build_theory():
-    # add constraints here
+    # The initial tile has to be a blank in order to swap with a target tile
+    for pos in BOARD:
+        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
+
+    # A tile can only swap with a position above, below, or beside it that is on the board
+    for pos in BOARD:
+        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
+    return E
+
+    # Check if the tile above, below, left, or right is a valid position 
+    for pos in BOARD:
+        pass 
+
+    # constraints for correct positions of each tile 
+    for pos in BOARD:
+        E.add_constraint(Correct(1, '[0][0]'))
+        E.add_constraint(Correct(2, '[0][1]'))
+        E.add_constraint(Correct(3, '[0][2]'))
+        E.add_constraint(Correct(4, '[1][0]'))
+        E.add_constraint(Correct(5, '[1][1]'))
+        E.add_constraint(Correct(6, '[1][2]'))
+        E.add_constraint(Correct(7, '[2][0]'))
+        E.add_constraint(Correct(8, '[2][1]'))
+        E.add_constraint(Correct('blank', '[2][2]'))
 
 
 if __name__ == "__main__":
 
-    T = example_theory()
+    T = build_theory()
     # Don't compile until you're finished adding all your constraints!
     T = T.compile()
     # After compilation (and only after), you can check some of the properties
