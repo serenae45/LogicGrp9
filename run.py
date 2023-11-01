@@ -82,9 +82,8 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile, pos):
+    def __init__(self, tile):
         self.tile = tile
-        self.pos = pos
 
     def __str__(self) -> str:
         return f"({self.tile} is at the correct position)"
@@ -122,13 +121,14 @@ class Left(Hashable): # checks if a position [p][q] to the left of blank tile is
         return f"(The position to the left of blank is a valid position on the board.)"
 
 @proposition(E)
-class Right(Hashable): # checks if a position [p][q] tot the right of the blank tile is valid
+class Right(Hashable): # checks if a position [p][q] to the right of the blank tile is valid
     def __init__(self) -> None:
         self.pos = pos
 
     def __str__(self) -> str:
         return f"(The position to the right of blank is a valid position on the board.)"
 @proposition(E)
+
 class CanSwap(Hashable): # checks if tile can move into a position (position has to be blank)
     def __init__(self, pos, d):
         self.pos = pos
@@ -137,8 +137,14 @@ class CanSwap(Hashable): # checks if tile can move into a position (position has
     def __str__(self) -> str:
         return f"({self.pos} can move {self.d}.)"
     
+@proposition(E)
+class on_board(Hashable): # checks if position is on the board (valid position to move into)
+    def __init__(self, pos):
+        self.pos = pos
 
-
+    def __str__(self) -> str:
+        return f"({self.pos} is a valid position.)"
+        
 
 # assign propositions to variables 
 board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
@@ -157,12 +163,25 @@ blank_props = []
 for pos in BOARD:
     blank_props.append(Blank(pos))
 
+can_swap_props = []
+for t in TILES:
+    for pos in BOARD:
+        can_swap_props.append(CanSwap(pos, t))
+
+on_board_props = [] 
+for t in TILES:
+    on_board_props.append(on_board(t))
+
 above_props = []
 length = len(BOARD)
 for i in range(length):
         if i >= 3:
             above_props.append(Above(BOARD[i-3]))
 
+below_props = []
+for i in range(length):
+    if i <= 6:
+        below_props.append(Below(BOARD[i+6]))
 '''
 # Build an example full theory for your setting and return it.
 #
@@ -192,11 +211,10 @@ def build_theory():
     # A tile can only swap with a position above, below, or beside it that is on the board
     for pos in BOARD:
         E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
-    return E
 
     # Check if the tile above, below, left, or right is a valid position 
     for pos in BOARD:
-        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Above(pos) >> IsOnBoard(pos) | Below(pos) >> IsOnBoard(pos)  Left(pos) >> IsOnBoard(pos) | Right(pos) >> IsOnBoard(pos))
+
 
 if __name__ == "__main__":
 
