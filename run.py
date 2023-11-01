@@ -183,17 +183,6 @@ def build_theory():
     for tile in TILES:
         E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
 
-    # constraints for correct positions of each tile 
-    for pos in BOARD:
-        E.add_constraint(Correct(1, '[0][0]'))
-        E.add_constraint(Correct(2, '[0][1]'))
-        E.add_constraint(Correct(3, '[0][2]'))
-        E.add_constraint(Correct(4, '[1][0]'))
-        E.add_constraint(Correct(5, '[1][1]'))
-        E.add_constraint(Correct(6, '[1][2]'))
-        E.add_constraint(Correct(7, '[2][0]'))
-        E.add_constraint(Correct(8, '[2][1]'))
-        E.add_constraint(Correct('blank', '[2][2]'))
 
     # constraints for correct positions of each tile 
     E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
