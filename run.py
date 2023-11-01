@@ -122,7 +122,7 @@ class Left(Hashable): # checks if a position [p][q] to the left of blank tile is
         return f"(The position to the left of blank is a valid position on the board.)"
 
 @proposition(E)
-class Right(Hashable): # checks if a position [p][q] tot the right of the blank tile is valid
+class Right(Hashable): # checks if a position [p][q] to the right of the blank tile is valid
     def __init__(self) -> None:
         self.pos = pos
 
@@ -139,7 +139,7 @@ class CanSwap(Hashable): # checks if tile can move into a position (position has
         return f"({self.pos} can move {self.d}.)"
     
 @proposition(E)
-class on_board(pos): # checks if position is on the board (valid position to move into)
+class on_board(Hashable): # checks if position is on the board (valid position to move into)
     def __init__(self, pos):
         self.pos = pos
 
@@ -164,12 +164,25 @@ blank_props = []
 for pos in BOARD:
     blank_props.append(Blank(pos))
 
+can_swap_props = []
+for t in TILES:
+    for pos in BOARD:
+        can_swap_props.append(CanSwap(pos, t))
+
+on_board_props = [] 
+for t in TILES:
+    on_board_props.append(on_board(t))
+
 above_props = []
 length = len(BOARD)
 for i in range(length):
         if i >= 3:
             above_props.append(Above(BOARD[i-3]))
 
+below_props = []
+for i in range(length):
+    if i <= 6:
+        below_props.append(Below(BOARD[i+6]))
 '''
 # Build an example full theory for your setting and return it.
 #
@@ -199,11 +212,10 @@ def build_theory():
     # A tile can only swap with a position above, below, or beside it that is on the board
     for pos in BOARD:
         E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
-    return E
 
     # Check if the tile above, below, left, or right is a valid position 
     for pos in BOARD:
-        pass 
+        pass
 
     # constraints for correct positions of each tile 
     for pos in BOARD:
@@ -216,6 +228,8 @@ def build_theory():
         E.add_constraint(Correct(7, '[2][0]'))
         E.add_constraint(Correct(8, '[2][1]'))
         E.add_constraint(Correct('blank', '[2][2]'))
+
+    return E
 
 
 if __name__ == "__main__":
