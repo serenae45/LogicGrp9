@@ -85,15 +85,13 @@ class can_move(tile, pos): # checks if tile can move into a position (position h
     def __str__(self) -> str:
         return f"({self.tile} can move into {self.pos}.)"
 
+@proposition(E)
+class on_board(pos): # checks if position is on the board (valid position to move into)
+    def __init__(self, pos):
+        self.pos = pos
 
-# assign propositions to variables 
-board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
-assigned_props = []
-
-for i in range(3):
-    for j in range(3): 
-        assigned_props.append(assigned(board[i][j], [i,j])) # not sure if the indexing is right here 
-        
+    def __str__(self) -> str:
+        return f"({self.pos} is on the board)" 
     
 
 
@@ -125,6 +123,9 @@ for i in range(n):
     for j in range(n):
         tile_number = tile_numbers[i][j]
         propositions.append(BasicPropositions(f"X{i}{j}", i, j))
+
+def build_theory():
+    # add constraints here
 
 
 if __name__ == "__main__":
