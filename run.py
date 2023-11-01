@@ -82,9 +82,8 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile, pos):
+    def __init__(self, tile):
         self.tile = tile
-        self.pos = pos
 
     def __str__(self) -> str:
         return f"({self.tile} is at the correct position)"
@@ -122,7 +121,7 @@ class Left(Hashable): # checks if a position [p][q] to the left of blank tile is
         return f"(The position to the left of blank is a valid position on the board.)"
 
 @proposition(E)
-class Right(Hashable): # checks if a position [p][q] tot the right of the blank tile is valid
+class Right(Hashable): # checks if a position [p][q] to the right of the blank tile is valid
     def __init__(self) -> None:
         self.pos = pos
 
@@ -173,12 +172,25 @@ blank_props = []
 for pos in BOARD:
     blank_props.append(Blank(pos))
 
+can_swap_props = []
+for t in TILES:
+    for pos in BOARD:
+        can_swap_props.append(CanSwap(pos, t))
+
+on_board_props = [] 
+for t in TILES:
+    on_board_props.append(on_board(t))
+
 above_props = []
 for pos in BOARD:
     above_props.append(Above(pos))
 
 w = goal_state(BOARD)
 
+below_props = []
+for i in range(length):
+    if i <= 6:
+        below_props.append(Below(BOARD[i+6]))
 '''
 # Build an example full theory for your setting and return it.
 #
@@ -208,6 +220,7 @@ def build_theory():
     # A tile can only swap with a position above, below, or beside it that is on the board
     for pos in BOARD:
         E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
+<<<<<<< HEAD
     
 
     # Check if the tile above, below, left, or right is a valid position 
@@ -240,6 +253,26 @@ def build_theory():
     
     
     return E
+=======
+
+    # Check if the tile above, below, left, or right is a valid position 
+    for pos in BOARD:
+        pass
+
+    # constraints for correct positions of each tile 
+    E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
+    E.add_constraint(Correct(2) >> Assigned(2, '[0][1]'))
+    E.add_constraint(Correct(3) >> Assigned(3, '[0][2]'))
+    E.add_constraint(Correct(4) >> Assigned(4, '[1][0]'))
+    E.add_constraint(Correct(5) >> Assigned(5, '[1][1]'))
+    E.add_constraint(Correct(6) >> Assigned(6, '[1][2]'))
+    E.add_constraint(Correct(7) >> Assigned(7, '[2][0]'))
+    E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
+    E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
+
+    return E
+
+>>>>>>> ad4a9537aedeb43d1cf94d665457efa5b7fb0b50
 
 if __name__ == "__main__":
 
