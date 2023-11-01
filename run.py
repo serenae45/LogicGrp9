@@ -25,50 +25,6 @@ class Hashable:
     def __repr__(self):
         return str(self)
 
-'''
-# To create propositions, create classes for them first, annotated with "@proposition" and the Encoding
-@proposition(E)
-class BasicPropositions:
-
-    def __init__(self, i, j):
-        self.i = i
-        self.j = j
-
-    def __repr__(self):
-        return f"A.{self.data}"
-
-# Different classes for propositions are useful because this allows for more dynamic constraint creation
-# for propositions within that class. For example, you can enforce that "at least one" of the propositions
-# that are instances of this class must be true by using a @constraint decorator.
-# other options include: at most one, exactly one, at most k, and implies all.
-# For a complete module reference, see https://bauhaus.readthedocs.io/en/latest/bauhaus.html
-@constraint.at_least_one(E)
-@proposition(E)
-class FancyPropositions:
-
-    def __init__(self, data):
-        self.data = data
-
-    def __repr__(self):
-        return f"A.{self.data}"
-
-'''
-
-
-
-'''
-# Call your variables whatever you want
-a = BasicPropositions("a")
-b = BasicPropositions("b")   
-c = BasicPropositions("c")
-d = BasicPropositions("d")
-e = BasicPropositions("e")
-# At least one of these will be true
-x = FancyPropositions("x")
-y = FancyPropositions("y")
-z = FancyPropositions("z")
-'''
-
 
 # slide puzzle propositions 
 @proposition(E)
@@ -112,6 +68,7 @@ class Below(Hashable): # checks if a position [p][q] below the blank tile is val
 
     def __str__(self) -> str:
         return f"(The position below the blank is a valid position on the board.)"
+
 @proposition(E)
 class Left(Hashable): # checks if a position [p][q] to the left of blank tile is valid
     def __init__(self, pos) :
@@ -188,29 +145,17 @@ for pos in BOARD:
 w = goal_state(BOARD)
 
 below_props = []
-for i in range(length):
-    if i <= 6:
-        below_props.append(Below(BOARD[i+6]))
-'''
-# Build an example full theory for your setting and return it.
-#
-#  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
-#  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
-#  what the expectations are.
-def example_theory():
-    # Add custom constraints by creating formulas with the variables you created. 
-    E.add_constraint((a | b) & ~x)
-    # Implication
-    E.add_constraint(y >> z)
-    # Negate a formula
-    E.add_constraint(~(x & y))
-    # You can also add more customized "fancy" constraints. Use case: you don't want to enforce "exactly one"
-    # for every instance of BasicPropositions, but you want to enforce it for a, b, and c.:
-    constraint.add_exactly_one(E, a, b, c)
+for pos in BOARD:
+    below_props.append(Below(pos))
 
-    return E
+left_props = []
+for pos in BOARD:
+    left_props.append(Left(pos))
 
-'''
+right_props = []
+for pos in BOARD:
+    right_props.append(Right(pos))
+
 
 def build_theory():
     # The initial tile has to be a blank in order to swap with a target tile
@@ -220,7 +165,6 @@ def build_theory():
     # A tile can only swap with a position above, below, or beside it that is on the board
     for pos in BOARD:
         E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
-<<<<<<< HEAD
     
 
     # Check if the tile above, below, left, or right is a valid position 
@@ -237,27 +181,8 @@ def build_theory():
 
     # All tiles need to be in their correct positions to solve the puzzle
     for tile in TILES:
-        E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
-
-    # constraints for correct positions of each tile 
-    for pos in BOARD:
-        E.add_constraint(Correct(1, '[0][0]'))
-        E.add_constraint(Correct(2, '[0][1]'))
-        E.add_constraint(Correct(3, '[0][2]'))
-        E.add_constraint(Correct(4, '[1][0]'))
-        E.add_constraint(Correct(5, '[1][1]'))
-        E.add_constraint(Correct(6, '[1][2]'))
-        E.add_constraint(Correct(7, '[2][0]'))
-        E.add_constraint(Correct(8, '[2][1]'))
-        E.add_constraint(Correct('blank', '[2][2]'))
+        E.add_constraint(goal_state(BOARD) >> Correct(tile))
     
-    
-    return E
-=======
-
-    # Check if the tile above, below, left, or right is a valid position 
-    for pos in BOARD:
-        pass
 
     # constraints for correct positions of each tile 
     E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
@@ -272,7 +197,6 @@ def build_theory():
 
     return E
 
->>>>>>> ad4a9537aedeb43d1cf94d665457efa5b7fb0b50
 
 if __name__ == "__main__":
 
