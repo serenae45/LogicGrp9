@@ -220,7 +220,6 @@ def build_theory():
     # A tile can only swap with a position above, below, or beside it that is on the board
     for pos in BOARD:
         E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
-<<<<<<< HEAD
     
 
     # Check if the tile above, below, left, or right is a valid position 
@@ -238,26 +237,7 @@ def build_theory():
     # All tiles need to be in their correct positions to solve the puzzle
     for tile in TILES:
         E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
-
-    # constraints for correct positions of each tile 
-    for pos in BOARD:
-        E.add_constraint(Correct(1, '[0][0]'))
-        E.add_constraint(Correct(2, '[0][1]'))
-        E.add_constraint(Correct(3, '[0][2]'))
-        E.add_constraint(Correct(4, '[1][0]'))
-        E.add_constraint(Correct(5, '[1][1]'))
-        E.add_constraint(Correct(6, '[1][2]'))
-        E.add_constraint(Correct(7, '[2][0]'))
-        E.add_constraint(Correct(8, '[2][1]'))
-        E.add_constraint(Correct('blank', '[2][2]'))
-    
-    
-    return E
-=======
-
-    # Check if the tile above, below, left, or right is a valid position 
-    for pos in BOARD:
-        pass
+   
 
     # constraints for correct positions of each tile 
     E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
@@ -270,9 +250,8 @@ def build_theory():
     E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
     E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
 
-    return E
 
->>>>>>> ad4a9537aedeb43d1cf94d665457efa5b7fb0b50
+
 
 if __name__ == "__main__":
 
