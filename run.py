@@ -82,9 +82,8 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile, pos):
+    def __init__(self, tile):
         self.tile = tile
-        self.pos = pos
 
     def __str__(self) -> str:
         return f"({self.tile} is at the correct position)"
@@ -218,16 +217,15 @@ def build_theory():
         pass
 
     # constraints for correct positions of each tile 
-    for pos in BOARD:
-        E.add_constraint(Correct(1, '[0][0]'))
-        E.add_constraint(Correct(2, '[0][1]'))
-        E.add_constraint(Correct(3, '[0][2]'))
-        E.add_constraint(Correct(4, '[1][0]'))
-        E.add_constraint(Correct(5, '[1][1]'))
-        E.add_constraint(Correct(6, '[1][2]'))
-        E.add_constraint(Correct(7, '[2][0]'))
-        E.add_constraint(Correct(8, '[2][1]'))
-        E.add_constraint(Correct('blank', '[2][2]'))
+    E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
+    E.add_constraint(Correct(2) >> Assigned(2, '[0][1]'))
+    E.add_constraint(Correct(3) >> Assigned(3, '[0][2]'))
+    E.add_constraint(Correct(4) >> Assigned(4, '[1][0]'))
+    E.add_constraint(Correct(5) >> Assigned(5, '[1][1]'))
+    E.add_constraint(Correct(6) >> Assigned(6, '[1][2]'))
+    E.add_constraint(Correct(7) >> Assigned(7, '[2][0]'))
+    E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
+    E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
 
     return E
 
