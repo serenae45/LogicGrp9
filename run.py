@@ -127,8 +127,8 @@ class Right(Hashable): # checks if a position [p][q] to the right of the blank t
 
     def __str__(self) -> str:
         return f"(The position to the right of blank is a valid position on the board.)"
-@proposition(E)
 
+@proposition(E)
 class CanSwap(Hashable): # checks if tile can move into a position (position has to be blank)
     def __init__(self, pos, d):
         self.pos = pos
@@ -144,6 +144,15 @@ class on_board(Hashable): # checks if position is on the board (valid position t
 
     def __str__(self) -> str:
         return f"({self.pos} is a valid position.)"
+    
+@proposition(E)
+class goal_state(Hashable):
+    def __init__(self, BOARD):
+        self.BOARD = BOARD
+    
+    def __str__(self) -> str:
+        return f"(The board is in its goal state.)"
+
         
 
 # assign propositions to variables 
@@ -173,10 +182,10 @@ for t in TILES:
     on_board_props.append(on_board(t))
 
 above_props = []
-length = len(BOARD)
-for i in range(length):
-        if i >= 3:
-            above_props.append(Above(BOARD[i-3]))
+for pos in BOARD:
+    above_props.append(Above(pos))
+
+w = goal_state(BOARD)
 
 below_props = []
 for i in range(length):
@@ -211,10 +220,45 @@ def build_theory():
     # A tile can only swap with a position above, below, or beside it that is on the board
     for pos in BOARD:
         E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
+<<<<<<< HEAD
+    
+
+    # Check if the tile above, below, left, or right is a valid position 
+    board_len = len(BOARD)
+    for i in range(board_len):
+        if i > 3:
+            E.add_constraint(on_board(BOARD[i-3]) >> Above(BOARD[i]))
+        if i < 6:
+            E.add_constraint(on_board(BOARD[i+3]) >> Below(BOARD[i]))
+        if i == 1 or i == 2 or i == 4 or i == 5 or i == 7 or i == 8:
+            E.add_constraint(on_board(BOARD[i-1]) >> Left(BOARD[i]))
+        if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
+            E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
+
+    # All tiles need to be in their correct positions to solve the puzzle
+    for tile in TILES:
+        E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
+
+    # constraints for correct positions of each tile 
+    for pos in BOARD:
+        E.add_constraint(Correct(1, '[0][0]'))
+        E.add_constraint(Correct(2, '[0][1]'))
+        E.add_constraint(Correct(3, '[0][2]'))
+        E.add_constraint(Correct(4, '[1][0]'))
+        E.add_constraint(Correct(5, '[1][1]'))
+        E.add_constraint(Correct(6, '[1][2]'))
+        E.add_constraint(Correct(7, '[2][0]'))
+        E.add_constraint(Correct(8, '[2][1]'))
+        E.add_constraint(Correct('blank', '[2][2]'))
+    
+    
+    return E
+=======
 
     # Check if the tile above, below, left, or right is a valid position 
     for pos in BOARD:
 
+>>>>>>> ad4a9537aedeb43d1cf94d665457efa5b7fb0b50
 
 if __name__ == "__main__":
 
