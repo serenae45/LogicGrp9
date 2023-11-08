@@ -135,8 +135,8 @@ for t in TILES:
         can_swap_props.append(CanSwap(pos, t))
 
 on_board_props = [] 
-for t in TILES:
-    on_board_props.append(on_board(t))
+for pos in BOARD:
+    on_board_props.append(on_board(pos))
 
 above_props = []
 for pos in BOARD:
@@ -180,8 +180,7 @@ def build_theory():
             E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
     # All tiles need to be in their correct positions to solve the puzzle
-    for tile in TILES:
-        E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
+    E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
 
 
     # constraints for correct positions of each tile 
