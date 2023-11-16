@@ -38,8 +38,9 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile):
+    def __init__(self, tile, pos):
         self.tile = tile
+        self.pos = pos
 
     def __str__(self) -> str:
         return f"({self.tile} is at the correct position)"
@@ -195,26 +196,22 @@ def build_theory():
         E.add_constraint(Correct('blank', '[2][2]'))
     
     
-    return E
-=======
-
-    # Check if the tile above, below, left, or right is a valid position 
+        # Check if the tile above, below, left, or right is a valid position 
     for pos in BOARD:
         pass
 
-    # constraints for correct positions of each tile 
-    E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
-    E.add_constraint(Correct(2) >> Assigned(2, '[0][1]'))
-    E.add_constraint(Correct(3) >> Assigned(3, '[0][2]'))
-    E.add_constraint(Correct(4) >> Assigned(4, '[1][0]'))
-    E.add_constraint(Correct(5) >> Assigned(5, '[1][1]'))
-    E.add_constraint(Correct(6) >> Assigned(6, '[1][2]'))
-    E.add_constraint(Correct(7) >> Assigned(7, '[2][0]'))
-    E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
-    E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
+        # constraints for correct positions of each tile 
+        E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
+        E.add_constraint(Correct(2) >> Assigned(2, '[0][1]'))
+        E.add_constraint(Correct(3) >> Assigned(3, '[0][2]'))
+        E.add_constraint(Correct(4) >> Assigned(4, '[1][0]'))
+        E.add_constraint(Correct(5) >> Assigned(5, '[1][1]'))
+        E.add_constraint(Correct(6) >> Assigned(6, '[1][2]'))
+        E.add_constraint(Correct(7) >> Assigned(7, '[2][0]'))
+        E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
+        E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
 
     return E
-
 
 
 
@@ -223,15 +220,15 @@ if __name__ == "__main__":
     T = build_theory()
     # Don't compile until you're finished adding all your constraints!
     T = T.compile()
-    # # After compilation (and only after), you can check some of the properties
-    # # of your model:
-    # print("\nSatisfiable: %s" % T.satisfiable())
-    # print("# Solutions: %d" % count_solutions(T))
-    # print("   Solution: %s" % T.solve())
+    # After compilation (and only after), you can check some of the properties
+    # of your model:
+    print("\nSatisfiable: %s" % T.satisfiable())
+    print("# Solutions: %d" % count_solutions(T))
+    print("   Solution: %s" % T.solve())
 
-    # print("\nVariable likelihoods:")
-    # for v,vn in zip([a,b,c,x,y,z], 'abcxyz'):
-    #     # Ensure that you only send these functions NNF formulas
-    #     # Literals are compiled to NNF here
-    #     print(" %s: %.2f" % (vn, likelihood(T, v)))
-    # print()
+    print("\nVariable likelihoods:")
+    for v,vn in zip([a,b,c,x,y,z], 'abcxyz'):
+        # Ensure that you only send these functions NNF formulas
+        # Literals are compiled to NNF here
+        print(" %s: %.2f" % (vn, likelihood(T, v)))
+    print()
