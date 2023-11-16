@@ -9,6 +9,7 @@ winning_board = [[1,2,3],
                  [7,8,"empty_box"]]
 current_pos = [2, 2] # holds the row and column index's of the empty box in the board list.
 moves = []
+time = 0
 
 def swap(board, current_pos, direction):
     if direction == "down":
@@ -18,6 +19,7 @@ def swap(board, current_pos, direction):
             board[current_pos[0]+1][current_pos[1]] = initial_pos # assign number in initial position to target position
             current_pos = [current_pos[0]+1,current_pos[1]] # update the current position to keep track of the empty box position
             moves.append("down")
+            time += 1
             return board, current_pos
         return "Error: The current number is either in the bottom row and cannot swap, or the target position is not an empty box."
     if direction == "up":
@@ -27,6 +29,7 @@ def swap(board, current_pos, direction):
             board[current_pos[0]-1][current_pos[1]] = initial_pos # assign number in initial position to target position
             moves.append("up")
             current_pos = [current_pos[0]-1,current_pos[1]] # update the current position to keep track of the empty box position
+            time += 1
             return board, current_pos
         return "Error: The current number is either at the top row and cannot swap up, or the target position is not an empty box."
     if direction == "right":
@@ -36,6 +39,7 @@ def swap(board, current_pos, direction):
             board[current_pos[0]][current_pos[1]+1] = initial_pos # assign number in initial position to target position
             current_pos = [current_pos[0],current_pos[1]+1] # update the current position to keep track of the empty box position
             moves.append("right")
+            time += 1
             return board, current_pos
         return "Error: The current number is either in the right most position and cannot swap, or the target position is not an empty box."
     if direction == "left":
@@ -45,6 +49,7 @@ def swap(board, current_pos, direction):
             board[current_pos[0]][current_pos[1]-1] = initial_pos # assign number in initial position to target position
             current_pos = [current_pos[0],current_pos[1]-1] # update the current position to keep track of the empty box position
             moves.append("left")
+            time += 1
             return board, current_pos
         return "Error: The current number is either in the left most position and cannot swap, or the target position is not an empty box"
     # we may want to move this to another function that checks all of the propositions, but I put it here for now.
@@ -55,3 +60,4 @@ def swap(board, current_pos, direction):
 board, current_pos = swap(board, current_pos, "up")
 print("board:", board)
 print("moves:", moves)
+print("time:", time)
