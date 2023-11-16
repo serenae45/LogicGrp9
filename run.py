@@ -190,8 +190,8 @@ def build_theory():
         if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
             E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
-    # All tiles need to be in their correct positions to solve the puzzle
-    E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
+    # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
+    E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') & clock(min_swaps) >> goal_state(BOARD))
 
     # constraints for correct positions of each tile 
     for pos in BOARD:
