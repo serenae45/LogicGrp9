@@ -196,30 +196,17 @@ def build_theory():
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
     E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') & clock(min_swaps) >> goal_state(BOARD))
 
-    # constraints for correct positions of each tile 
-    for pos in BOARD:
-        E.add_constraint(Correct(1, '[0][0]'))
-        E.add_constraint(Correct(2, '[0][1]'))
-        E.add_constraint(Correct(3, '[0][2]'))
-        E.add_constraint(Correct(4, '[1][0]'))
-        E.add_constraint(Correct(5, '[1][1]'))
-        E.add_constraint(Correct(6, '[1][2]'))
-        E.add_constraint(Correct(7, '[2][0]'))
-        E.add_constraint(Correct(8, '[2][1]'))
-        E.add_constraint(Correct('blank', '[2][2]'))
     
-
-
-        # constraints for correct positions of each tile 
-        E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
-        E.add_constraint(Correct(2) >> Assigned(2, '[0][1]'))
-        E.add_constraint(Correct(3) >> Assigned(3, '[0][2]'))
-        E.add_constraint(Correct(4) >> Assigned(4, '[1][0]'))
-        E.add_constraint(Correct(5) >> Assigned(5, '[1][1]'))
-        E.add_constraint(Correct(6) >> Assigned(6, '[1][2]'))
-        E.add_constraint(Correct(7) >> Assigned(7, '[2][0]'))
-        E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
-        E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
+    # constraints for correct positions of each tile 
+    E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
+    E.add_constraint(Correct(2) >> Assigned(2, '[0][1]'))
+    E.add_constraint(Correct(3) >> Assigned(3, '[0][2]'))
+    E.add_constraint(Correct(4) >> Assigned(4, '[1][0]'))
+    E.add_constraint(Correct(5) >> Assigned(5, '[1][1]'))
+    E.add_constraint(Correct(6) >> Assigned(6, '[1][2]'))
+    E.add_constraint(Correct(7) >> Assigned(7, '[2][0]'))
+    E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
+    E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
 
     return E
 
