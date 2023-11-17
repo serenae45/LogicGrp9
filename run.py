@@ -5,7 +5,7 @@ from bauhaus.utils import count_solutions, likelihood
 
 from directions import DIRECTIONS
 from board import BOARD
-from tiles import TILES
+from input_tiles import TILES, min_swaps
 
 
 # These two lines make sure a faster SAT solver is used.
@@ -29,7 +29,7 @@ class Hashable:
 # slide puzzle propositions 
 @proposition(E)
 class Assigned(Hashable): # checks if number is assigned to a position 
-    def __init__(self, tile, pos):
+    def __init__(self, tile, pos) -> None:
         self.tile = tile
         self.pos = pos
 
@@ -38,7 +38,7 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile):
+    def __init__(self, tile, pos):
         self.tile = tile
 
     def __str__(self) -> str:
@@ -47,7 +47,7 @@ class Correct(Hashable): # checks if a number is at the right position
 @constraint.exactly_one(E) 
 @proposition(E) 
 class Blank(Hashable): # checks if a position is blank 
-    def __init__(self, pos):
+    def __init__(self, pos) -> None:
         self.pos = pos
 
     def __str__(self) -> str:
@@ -55,7 +55,7 @@ class Blank(Hashable): # checks if a position is blank
     
 @proposition(E)
 class Above(Hashable): # checks if a position [p][q] above the blank tile is valid
-    def __init__(self, pos):
+    def __init__(self, pos) -> None:
         self.pos = pos
 
     def __str__(self) -> str:
@@ -63,7 +63,7 @@ class Above(Hashable): # checks if a position [p][q] above the blank tile is val
 
 @proposition(E)   
 class Below(Hashable): # checks if a position [p][q] below the blank tile is valid
-    def __init__(self, pos) :
+    def __init__(self, pos) -> None:
         self.pos = pos
 
     def __str__(self) -> str:
@@ -71,7 +71,7 @@ class Below(Hashable): # checks if a position [p][q] below the blank tile is val
 
 @proposition(E)
 class Left(Hashable): # checks if a position [p][q] to the left of blank tile is valid
-    def __init__(self, pos) :
+    def __init__(self, pos) -> None:
         self.pos = pos
 
     def __str__(self) -> str:
@@ -87,7 +87,7 @@ class Right(Hashable): # checks if a position [p][q] to the right of the blank t
 
 @proposition(E)
 class CanSwap(Hashable): # checks if tile can move into a position (position has to be blank)
-    def __init__(self, pos, d):
+    def __init__(self, pos, d) -> None:
         self.pos = pos
         self.d = d
     
@@ -96,7 +96,7 @@ class CanSwap(Hashable): # checks if tile can move into a position (position has
     
 @proposition(E)
 class on_board(Hashable): # checks if position is on the board (valid position to move into)
-    def __init__(self, pos):
+    def __init__(self, pos) -> None:
         self.pos = pos
 
     def __str__(self) -> str:
@@ -104,11 +104,19 @@ class on_board(Hashable): # checks if position is on the board (valid position t
     
 @proposition(E)
 class goal_state(Hashable):
-    def __init__(self, BOARD):
+    def __init__(self, BOARD) -> None:
         self.BOARD = BOARD
     
     def __str__(self) -> str:
         return f"(The board is in its goal state.)"
+
+@proposition(E)
+class clock(Hashable):
+    def __init__(self, min_swaps) -> None:
+        self.min_swaps = min_swaps
+    
+    def __str__(self) -> str:
+        return f"(The board is solved within {self.min_swaps} moves.)"
 
         
 
@@ -122,17 +130,16 @@ for t in TILES:
 
 correct_props = []
 for t in TILES:
-    for pos in BOARD:
-        correct_props.append(Correct(t, pos))
+    correct_props.append(Correct(t))
 
 blank_props = []
 for pos in BOARD:
     blank_props.append(Blank(pos))
 
 can_swap_props = []
-for t in TILES:
-    for pos in BOARD:
-        can_swap_props.append(CanSwap(pos, t))
+for pos in BOARD:
+    for d in DIRECTIONS:
+        can_swap_props.append(CanSwap(pos, d))
 
 on_board_props = [] 
 for pos in BOARD:
@@ -143,6 +150,7 @@ for pos in BOARD:
     above_props.append(Above(pos))
 
 w = goal_state(BOARD)
+c = clock(min_swaps)
 
 below_props = []
 for pos in BOARD:
@@ -155,6 +163,8 @@ for pos in BOARD:
 right_props = []
 for pos in BOARD:
     right_props.append(Right(pos))
+
+
 
 
 def build_theory():
@@ -179,8 +189,8 @@ def build_theory():
         if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
             E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
-    # All tiles need to be in their correct positions to solve the puzzle
-    E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') >> goal_state(BOARD))
+    # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
+    E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') & clock(min_swaps) >> goal_state(BOARD))
 
     # constraints for correct positions of each tile 
     for pos in BOARD:
