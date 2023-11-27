@@ -270,7 +270,7 @@ def build_theory():
                      & Assigned(5, '[1][1]') & Assigned(6, '[1][2]') & Assigned(7, '[2][0]') & Assigned(8, '[2][1]') 
                      & Assigned('blank', '[2][2]') & clock(min_swaps) >> goal_state(BOARD))
 
-    for x in TILES {
+    for x in TILES:
         E.add_constraint(Swap_pos1pos2 & Assigned(x, '[0][0]') & Assigned('blank', '[0][1]') >> Assigned('blank', '[0][0]') & Assigned(x, '[0][1]') & ~(Assigned(x, '[0][0]')) & ~(Assigned('blank', '[0][1]')))
         E.add_constraint(Swap_pos1pos4 & Assigned(x, '[0][0]') & Assigned('blank', '[1][0]') >> Assigned('blank', '[0][0]') & Assigned(x, '[1][0]') & ~(Assigned(x, '[0][0]')) & ~(Assigned('blank', '[1][0]')))
         E.add_constraint(Swap_pos2pos3 & Assigned(x, '[0][1]') & Assigned('blank', '[0][2]') >> Assigned('blank', '[0][1]') & Assigned(x, '[0][2]') & ~(Assigned(x, '[0][1]')) & ~(Assigned('blank', '[0][2]')))
@@ -296,7 +296,6 @@ def build_theory():
         E.add_constraint(Swap_pos6pos9 & Assigned('blank', '[1][2]') & Assigned(x, '[2][2]') >> Assigned(x, '[1][2]') & Assigned('blank', '[2][2]') & ~(Assigned('blank', '[1][2]')) & ~(Assigned(x, '[2][2]')))
         E.add_constraint(Swap_pos7pos8 & Assigned('blank', '[2][0]') & Assigned(x, '[2][1]') >> Assigned(x, '[2][0]') & Assigned('blank', '[2][1]') & ~(Assigned('blank', '[2][0]')) & ~(Assigned(x, '[2][1]')))
         E.add_constraint(Swap_pos8pos9 & Assigned('blank', '[2][1]') & Assigned(x, '[2][2]') >> Assigned(x, '[2][1]') & Assigned('blank', '[2][2]') & ~(Assigned('blank', '[2][1]')) & ~(Assigned(x, '[2][2]')))
-    }
     
 
     return E
