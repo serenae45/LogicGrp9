@@ -39,7 +39,7 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile, pos):
+    def __init__(self, tile):
         self.tile = tile
 
     def __str__(self) -> str:
@@ -126,7 +126,7 @@ class Swap_pos1pos2(Hashable):
         self.pos2 = pos2
 
     def __str__(self) -> str:
-        return f"(pos1 swapped with pos2)"
+        return f"({self.pos1} swapped with {self.pos2})"
 
 
 @proposition(E)
@@ -136,7 +136,7 @@ class Swap_pos1pos4(Hashable):
         self.pos4 = pos4
 
     def __str__(self) -> str:
-        return f"(pos1 swapped with pos4)"
+        return f"({self.pos1} swapped with {self.pos4})"
 
 @proposition(E)
 class Swap_pos2pos3(Hashable):
@@ -145,7 +145,7 @@ class Swap_pos2pos3(Hashable):
         self.pos3 = pos3
 
     def __str__(self) -> str:
-        return f"(pos2   swapped with pos3)"
+        return f"({self.pos2}cswapped with {self.pos3})"
 
 @proposition(E)
 class Swap_pos2pos5(Hashable):
@@ -154,7 +154,7 @@ class Swap_pos2pos5(Hashable):
         self.pos5 = pos5
 
     def __str__(self) -> str:
-        return f"(pos2 swapped with pos5)"
+        return f"({self.pos2} swapped with {self.pos5})"
 
 @proposition(E)
 class Swap_pos3pos6(Hashable):
@@ -163,7 +163,7 @@ class Swap_pos3pos6(Hashable):
         self.pos6 = pos6
 
     def __str__(self) -> str:
-        return f"(pos3 swapped with pos6)"
+        return f"({self.pos3} swapped with {self.pos6})"
 
 @proposition(E)
 class Swap_pos4pos5(Hashable):
@@ -172,7 +172,7 @@ class Swap_pos4pos5(Hashable):
         self.pos5 = pos5
 
     def __str__(self) -> str:
-        return f"(pos4 swapped with pos5)"
+        return f"({self.pos4} swapped with {self.pos5})"
     
 @proposition(E)
 class Swap_pos4pos7(Hashable):
@@ -181,7 +181,7 @@ class Swap_pos4pos7(Hashable):
         self.pos7 = pos7
 
     def __str__(self) -> str:
-        return f"(pos4 swapped with pos7)"
+        return f"({self.pos4} swapped with {self.pos7})"
     
 @proposition(E)
 class Swap_pos5pos6(Hashable):
@@ -190,7 +190,7 @@ class Swap_pos5pos6(Hashable):
         self.pos6 = pos6
 
     def __str__(self) -> str:
-        return f"(pos5 swapped with pos6)"
+        return f"({self.pos5} swapped with {self.pos5})"
 
 @proposition(E)
 class Swap_pos5pos8(Hashable):
@@ -199,7 +199,7 @@ class Swap_pos5pos8(Hashable):
         self.pos8 = pos8
 
     def __str__(self) -> str:
-        return f"(pos5 swapped with pos8)"
+        return f"({self.pos5} swapped with {self.pos8})"
     
 @proposition(E)
 class Swap_pos6pos9(Hashable):
@@ -208,7 +208,7 @@ class Swap_pos6pos9(Hashable):
         self.pos6 = pos9
 
     def __str__(self) -> str:
-        return f"(pos6 swapped with pos9)"
+        return f"({self.pos6} swapped with {self.pos9})"
     
 @proposition(E)
 class Swap_pos7pos8(Hashable):
@@ -217,7 +217,7 @@ class Swap_pos7pos8(Hashable):
         self.pos8 = pos8
 
     def __str__(self) -> str:
-        return f"(pos7 swapped with pos8)"
+        return f"({self.pos7} swapped with {self.pos8})"
     
 @proposition(E)
 class Swap_pos8pos9(Hashable):
@@ -226,7 +226,7 @@ class Swap_pos8pos9(Hashable):
         self.pos9 = pos9
 
     def __str__(self) -> str:
-        return f"(pos8 swapped with pos9)"
+        return f"({self.pos8} swapped with {self.pos9})"
 
 # assign propositions to variables 
 board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
