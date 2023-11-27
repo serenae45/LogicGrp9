@@ -39,9 +39,8 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile) -> None:
+    def __init__(self, tile, pos):
         self.tile = tile
-        self.pos = pos
 
     def __str__(self) -> str:
         return f"({self.tile} is at the correct position)"
@@ -119,7 +118,80 @@ class clock(Hashable):
     
     def __str__(self) -> str:
         return f"(The board is solved within {self.min_swaps} moves.)"
+    
+@proposition(E)
+class Swap_pos1pos2(Hashable):
+    def __init__(self, pos1, pos2) -> None:
+        self.pos1 = pos1
+        self.pos2 = pos2
 
+@proposition(E)
+class Swap_pos1pos4(Hashable):
+    def __init__(self, pos1, pos4) -> None:
+        self.pos1 = pos1
+        self.pos4 = pos4
+
+@proposition(E)
+class Swap_pos2pos3(Hashable):
+    def __init__(self, pos2, pos3) -> None:
+        self.pos2 = pos2
+        self.pos3 = pos3
+
+@proposition(E)
+class Swap_pos2pos5(Hashable):
+    def __init__(self, pos2, pos5) -> None:
+        self.pos2 = pos2
+        self.pos5 = pos5
+
+@proposition(E)
+class Swap_pos3pos6(Hashable):
+    def __init__(self, pos3, pos6) -> None:
+        self.pos3 = pos3
+        self.pos6 = pos6
+
+@proposition(E)
+class Swap_pos4pos5(Hashable):
+    def __init__(self, pos4, pos5) -> None:
+        self.pos4 = pos4
+        self.pos5 = pos5
+
+
+@proposition(E)
+class Swap_pos4pos7(Hashable):
+    def __init__(self, pos4, pos7) -> None:
+        self.pos4 = pos4
+        self.pos7 = pos7
+
+@proposition(E)
+class Swap_pos5pos6(Hashable):
+    def __init__(self, pos5, pos6) -> None:
+        self.pos5 = pos5
+        self.pos6 = pos6
+
+
+@proposition(E)
+class Swap_pos5pos8(Hashable):
+    def __init__(self, pos5, pos8) -> None:
+        self.pos5 = pos5
+        self.pos8 = pos8
+
+@proposition(E)
+class Swap_pos6pos9(Hashable):
+    def __init__(self, pos6, pos9) -> None:
+        self.pos6 = pos6
+        self.pos6 = pos9
+
+@proposition(E)
+class Swap_pos7pos8(Hashable):
+    def __init__(self, pos7, pos8) -> None:
+        self.pos7 = pos7
+        self.pos8 = pos8
+
+@proposition(E)
+class Swap_pos8pos9(Hashable):
+    def __init__(self, pos8, pos9) -> None:
+        self.pos8 = pos8
+        self.pos9 = pos9
         
 
 # assign propositions to variables 
@@ -231,6 +303,7 @@ def build_theory():
 
 
 
+
 if __name__ == "__main__":
 
     T = build_theory()
@@ -239,12 +312,12 @@ if __name__ == "__main__":
     # After compilation (and only after), you can check some of the properties
     # of your model:
     print("\nSatisfiable: %s" % T.satisfiable())
-    print("# Solutions: %d" % count_solutions(T))
-    print("   Solution: %s" % T.solve())
+    # print("# Solutions: %d" % count_solutions(T))
+    # print("   Solution: %s" % T.solve())
 
-    print("\nVariable likelihoods:")
-    for v,vn in zip([a,b,c,x,y,z], 'abcxyz'):
-        # Ensure that you only send these functions NNF formulas
-        # Literals are compiled to NNF here
-        print(" %s: %.2f" % (vn, likelihood(T, v)))
+    # print("\nVariable likelihoods:")
+    # for v,vn in zip([a,b,c,x,y,z], 'abcxyz'):
+    #     # Ensure that you only send these functions NNF formulas
+    #     # Literals are compiled to NNF here
+    #     print(" %s: %.2f" % (vn, likelihood(T, v)))
     print()
