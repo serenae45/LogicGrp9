@@ -236,66 +236,66 @@ for t in TILES:
     for pos in BOARD:
         assigned_props.append(Assigned(t, pos))
 
-correct_props = []
-for t in TILES:
-    correct_props.append(Correct(t))
+# correct_props = []
+# for t in TILES:
+#     correct_props.append(Correct(t))
 
-blank_props = []
-for pos in BOARD:
-    blank_props.append(Blank(pos))
+# blank_props = []
+# for pos in BOARD:
+#     blank_props.append(Blank(pos))
 
-can_swap_props = []
-for pos in BOARD:
-    for d in DIRECTIONS:
-        can_swap_props.append(CanSwap(pos, d))
+# can_swap_props = []
+# for pos in BOARD:
+#     for d in DIRECTIONS:
+#         can_swap_props.append(CanSwap(pos, d))
 
-on_board_props = [] 
-for pos in BOARD:
-    on_board_props.append(on_board(pos))
+# on_board_props = [] 
+# for pos in BOARD:
+#     on_board_props.append(on_board(pos))
 
-above_props = []
-for pos in BOARD:
-    above_props.append(Above(pos))
+# above_props = []
+# for pos in BOARD:
+#     above_props.append(Above(pos))
 
 w = goal_state(BOARD)
 c = clock(min_swaps)
 
-below_props = []
-for pos in BOARD:
-    below_props.append(Below(pos))
+# below_props = []
+# for pos in BOARD:
+#     below_props.append(Below(pos))
 
-left_props = []
-for pos in BOARD:
-    left_props.append(Left(pos))
+# left_props = []
+# for pos in BOARD:
+#     left_props.append(Left(pos))
 
-right_props = []
-for pos in BOARD:
-    right_props.append(Right(pos))
+# right_props = []
+# for pos in BOARD:
+#     right_props.append(Right(pos))
 
 
 
 
 def build_theory():
-    # The initial tile has to be a blank in order to swap with a target tile
-    for pos in BOARD:
-        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
+    # # The initial tile has to be a blank in order to swap with a target tile
+    # for pos in BOARD:
+    #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
 
-    # A tile can only swap with a position above, below, or beside it that is on the board
-    for pos in BOARD:
-        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
+    # # A tile can only swap with a position above, below, or beside it that is on the board
+    # for pos in BOARD:
+    #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
     
 
-    # Check if the tile above, below, left, or right is a valid position 
-    board_len = len(BOARD)
-    for i in range(board_len):
-        if i > 3:
-            E.add_constraint(on_board(BOARD[i-3]) >> Above(BOARD[i]))
-        if i < 6:
-            E.add_constraint(on_board(BOARD[i+3]) >> Below(BOARD[i]))
-        if i == 1 or i == 2 or i == 4 or i == 5 or i == 7 or i == 8:
-            E.add_constraint(on_board(BOARD[i-1]) >> Left(BOARD[i]))
-        if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
-            E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
+    # # Check if the tile above, below, left, or right is a valid position 
+    # board_len = len(BOARD)
+    # for i in range(board_len):
+    #     if i > 3:
+    #         E.add_constraint(on_board(BOARD[i-3]) >> Above(BOARD[i]))
+    #     if i < 6:
+    #         E.add_constraint(on_board(BOARD[i+3]) >> Below(BOARD[i]))
+    #     if i == 1 or i == 2 or i == 4 or i == 5 or i == 7 or i == 8:
+    #         E.add_constraint(on_board(BOARD[i-1]) >> Left(BOARD[i]))
+    #     if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
+    #         E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
     if time == min_swaps:
         E.add_constraint(clock(min_swaps))
@@ -304,7 +304,7 @@ def build_theory():
                      & Assigned(5, '[1][1]') & Assigned(6, '[1][2]') & Assigned(7, '[2][0]') & Assigned(8, '[2][1]') 
                      & Assigned('blank', '[2][2]') & clock(min_swaps) >> goal_state(BOARD))
 
-    for x in TILES {
+    for x in TILES:
         E.add_constraint(Swap_pos1pos2 & Assigned(x, '[0][0]') & Assigned('blank', '[0][1]') >> Assigned('blank', '[0][0]') & Assigned(x, '[0][1]') & ~(Assigned(x, '[0][0]')) & ~(Assigned('blank', '[0][1]')))
         E.add_constraint(Swap_pos1pos4 & Assigned(x, '[0][0]') & Assigned('blank', '[1][0]') >> Assigned('blank', '[0][0]') & Assigned(x, '[1][0]') & ~(Assigned(x, '[0][0]')) & ~(Assigned('blank', '[1][0]')))
         E.add_constraint(Swap_pos2pos3 & Assigned(x, '[0][1]') & Assigned('blank', '[0][2]') >> Assigned('blank', '[0][1]') & Assigned(x, '[0][2]') & ~(Assigned(x, '[0][1]')) & ~(Assigned('blank', '[0][2]')))
@@ -330,7 +330,6 @@ def build_theory():
         E.add_constraint(Swap_pos6pos9 & Assigned('blank', '[1][2]') & Assigned(x, '[2][2]') >> Assigned(x, '[1][2]') & Assigned('blank', '[2][2]') & ~(Assigned('blank', '[1][2]')) & ~(Assigned(x, '[2][2]')))
         E.add_constraint(Swap_pos7pos8 & Assigned('blank', '[2][0]') & Assigned(x, '[2][1]') >> Assigned(x, '[2][0]') & Assigned('blank', '[2][1]') & ~(Assigned('blank', '[2][0]')) & ~(Assigned(x, '[2][1]')))
         E.add_constraint(Swap_pos8pos9 & Assigned('blank', '[2][1]') & Assigned(x, '[2][2]') >> Assigned(x, '[2][1]') & Assigned('blank', '[2][2]') & ~(Assigned('blank', '[2][1]')) & ~(Assigned(x, '[2][2]')))
-    }
     
 
     return E
