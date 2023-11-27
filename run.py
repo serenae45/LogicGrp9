@@ -202,66 +202,66 @@ for t in TILES:
     for pos in BOARD:
         assigned_props.append(Assigned(t, pos))
 
-correct_props = []
-for t in TILES:
-    correct_props.append(Correct(t))
+# correct_props = []
+# for t in TILES:
+#     correct_props.append(Correct(t))
 
-blank_props = []
-for pos in BOARD:
-    blank_props.append(Blank(pos))
+# blank_props = []
+# for pos in BOARD:
+#     blank_props.append(Blank(pos))
 
-can_swap_props = []
-for pos in BOARD:
-    for d in DIRECTIONS:
-        can_swap_props.append(CanSwap(pos, d))
+# can_swap_props = []
+# for pos in BOARD:
+#     for d in DIRECTIONS:
+#         can_swap_props.append(CanSwap(pos, d))
 
-on_board_props = [] 
-for pos in BOARD:
-    on_board_props.append(on_board(pos))
+# on_board_props = [] 
+# for pos in BOARD:
+#     on_board_props.append(on_board(pos))
 
-above_props = []
-for pos in BOARD:
-    above_props.append(Above(pos))
+# above_props = []
+# for pos in BOARD:
+#     above_props.append(Above(pos))
 
 w = goal_state(BOARD)
 c = clock(min_swaps)
 
-below_props = []
-for pos in BOARD:
-    below_props.append(Below(pos))
+# below_props = []
+# for pos in BOARD:
+#     below_props.append(Below(pos))
 
-left_props = []
-for pos in BOARD:
-    left_props.append(Left(pos))
+# left_props = []
+# for pos in BOARD:
+#     left_props.append(Left(pos))
 
-right_props = []
-for pos in BOARD:
-    right_props.append(Right(pos))
+# right_props = []
+# for pos in BOARD:
+#     right_props.append(Right(pos))
 
 
 
 
 def build_theory():
-    # The initial tile has to be a blank in order to swap with a target tile
-    for pos in BOARD:
-        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
+    # # The initial tile has to be a blank in order to swap with a target tile
+    # for pos in BOARD:
+    #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
 
-    # A tile can only swap with a position above, below, or beside it that is on the board
-    for pos in BOARD:
-        E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
+    # # A tile can only swap with a position above, below, or beside it that is on the board
+    # for pos in BOARD:
+    #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
     
 
-    # Check if the tile above, below, left, or right is a valid position 
-    board_len = len(BOARD)
-    for i in range(board_len):
-        if i > 3:
-            E.add_constraint(on_board(BOARD[i-3]) >> Above(BOARD[i]))
-        if i < 6:
-            E.add_constraint(on_board(BOARD[i+3]) >> Below(BOARD[i]))
-        if i == 1 or i == 2 or i == 4 or i == 5 or i == 7 or i == 8:
-            E.add_constraint(on_board(BOARD[i-1]) >> Left(BOARD[i]))
-        if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
-            E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
+    # # Check if the tile above, below, left, or right is a valid position 
+    # board_len = len(BOARD)
+    # for i in range(board_len):
+    #     if i > 3:
+    #         E.add_constraint(on_board(BOARD[i-3]) >> Above(BOARD[i]))
+    #     if i < 6:
+    #         E.add_constraint(on_board(BOARD[i+3]) >> Below(BOARD[i]))
+    #     if i == 1 or i == 2 or i == 4 or i == 5 or i == 7 or i == 8:
+    #         E.add_constraint(on_board(BOARD[i-1]) >> Left(BOARD[i]))
+    #     if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
+    #         E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
     if time == min_swaps:
         E.add_constraint(clock(min_swaps))
