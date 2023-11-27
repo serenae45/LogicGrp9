@@ -194,19 +194,38 @@ def build_theory():
     if time == min_swaps:
         E.add_constraint(clock(min_swaps))
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
-    E.add_constraint(Correct(1) & Correct(2) & Correct(3) & Correct(4) & Correct(5) & Correct(6) & Correct(7) & Correct(8) & Correct('blank') & clock(min_swaps) >> goal_state(BOARD))
+    E.add_constraint(Assigned(1, '[0][0]') & Assigned(2, '[0][1]') & Assigned(3, '[0][2]') & Assigned(4, '[1][0]') 
+                     & Assigned(5, '[1][1]') & Assigned(6, '[1][2]') & Assigned(7, '[2][0]') & Assigned(8, '[2][1]') 
+                     & Assigned('blank', '[2][2]') & clock(min_swaps) >> goal_state(BOARD))
 
+    for x in TILES {
+        E.add_constraint(Swap_pos1pos2 & Assigned(x, '[0][0]') & Assigned('blank', '[0][1]') >> Assigned('blank', '[0][0]') & Assigned(x, '[0][1]') & ~(Assigned(x, '[0][0]')) & ~(Assigned('blank', '[0][1]')))
+        E.add_constraint(Swap_pos1pos4 & Assigned(x, '[0][0]') & Assigned('blank', '[1][0]') >> Assigned('blank', '[0][0]') & Assigned(x, '[1][0]') & ~(Assigned(x, '[0][0]')) & ~(Assigned('blank', '[1][0]')))
+        E.add_constraint(Swap_pos2pos3 & Assigned(x, '[0][1]') & Assigned('blank', '[0][2]') >> Assigned('blank', '[0][1]') & Assigned(x, '[0][2]') & ~(Assigned(x, '[0][1]')) & ~(Assigned('blank', '[0][2]')))
+        E.add_constraint(Swap_pos2pos5 & Assigned(x, '[0][1]') & Assigned('blank', '[1][1]') >> Assigned('blank', '[0][1]') & Assigned(x, '[1][1]') & ~(Assigned(x, '[0][1]')) & ~(Assigned('blank', '[1][1]')))
+        E.add_constraint(Swap_pos3pos6 & Assigned(x, '[0][2]') & Assigned('blank', '[1][2]') >> Assigned('blank', '[0][2]') & Assigned(x, '[1][2]') & ~(Assigned(x, '[0][2]')) & ~(Assigned('blank', '[1][2]')))
+        E.add_constraint(Swap_pos4pos5 & Assigned(x, '[1][0]') & Assigned('blank', '[1][1]') >> Assigned('blank', '[1][0]') & Assigned(x, '[1][1]') & ~(Assigned(x, '[1][0]')) & ~(Assigned('blank', '[1][1]')))
+        E.add_constraint(Swap_pos4pos7 & Assigned(x, '[1][0]') & Assigned('blank', '[2][0]') >> Assigned('blank', '[1][0]') & Assigned(x, '[2][0]') & ~(Assigned(x, '[1][0]')) & ~(Assigned('blank', '[2][0]')))
+        E.add_constraint(Swap_pos5pos6 & Assigned(x, '[1][1]') & Assigned('blank', '[1][2]') >> Assigned('blank', '[1][1]') & Assigned(x, '[1][2]') & ~(Assigned(x, '[1][1]')) & ~(Assigned('blank', '[1][2]')))
+        E.add_constraint(Swap_pos5pos8 & Assigned(x, '[1][1]') & Assigned('blank', '[2][1]') >> Assigned('blank', '[1][1]') & Assigned(x, '[2][1]') & ~(Assigned(x, '[1][1]')) & ~(Assigned('blank', '[2][1]')))
+        E.add_constraint(Swap_pos6pos9 & Assigned(x, '[1][2]') & Assigned('blank', '[2][2]') >> Assigned('blank', '[1][2]') & Assigned(x, '[2][2]') & ~(Assigned(x, '[1][2]')) & ~(Assigned('blank', '[2][2]')))
+        E.add_constraint(Swap_pos7pos8 & Assigned(x, '[2][0]') & Assigned('blank', '[2][1]') >> Assigned('blank', '[2][0]') & Assigned(x, '[2][1]') & ~(Assigned(x, '[2][0]')) & ~(Assigned('blank', '[2][1]')))
+        E.add_constraint(Swap_pos8pos9 & Assigned(x, '[2][1]') & Assigned('blank', '[2][2]') >> Assigned('blank', '[2][1]') & Assigned(x, '[2][2]') & ~(Assigned(x, '[2][1]')) & ~(Assigned('blank', '[2][2]')))
+
+        E.add_constraint(Swap_pos1pos2 & Assigned('blank', '[0][0]') & Assigned(x, '[0][1]') >> Assigned(x, '[0][0]') & Assigned('blank', '[0][1]') & ~(Assigned('blank', '[0][0]')) & ~(Assigned(x, '[0][1]')))
+        E.add_constraint(Swap_pos1pos4 & Assigned('blank', '[0][0]') & Assigned(x, '[1][0]') >> Assigned(x, '[0][0]') & Assigned('blank', '[1][0]') & ~(Assigned('blank', '[0][0]')) & ~(Assigned(x, '[1][0]')))
+        E.add_constraint(Swap_pos2pos3 & Assigned('blank', '[0][1]') & Assigned(x, '[0][2]') >> Assigned(x, '[0][1]') & Assigned('blank', '[0][2]') & ~(Assigned('blank', '[0][1]')) & ~(Assigned(x, '[0][2]')))
+        E.add_constraint(Swap_pos2pos5 & Assigned('blank', '[0][1]') & Assigned(x, '[1][1]') >> Assigned(x, '[0][1]') & Assigned('blank', '[1][1]') & ~(Assigned('blank', '[0][1]')) & ~(Assigned(x, '[1][1]')))
+        E.add_constraint(Swap_pos3pos6 & Assigned('blank', '[0][2]') & Assigned(x, '[1][2]') >> Assigned(x, '[0][2]') & Assigned('blank', '[1][2]') & ~(Assigned('blank', '[0][2]')) & ~(Assigned(x, '[1][2]')))
+        E.add_constraint(Swap_pos4pos5 & Assigned('blank', '[1][0]') & Assigned(x, '[1][1]') >> Assigned(x, '[1][0]') & Assigned('blank', '[1][1]') & ~(Assigned('blank', '[1][0]')) & ~(Assigned(x, '[1][1]')))
+        E.add_constraint(Swap_pos4pos7 & Assigned('blank', '[1][0]') & Assigned(x, '[2][0]') >> Assigned(x, '[1][0]') & Assigned('blank', '[2][0]') & ~(Assigned('blank', '[1][0]')) & ~(Assigned(x, '[2][0]')))
+        E.add_constraint(Swap_pos5pos6 & Assigned('blank', '[1][1]') & Assigned(x, '[1][2]') >> Assigned(x, '[1][1]') & Assigned('blank', '[1][2]') & ~(Assigned('blank', '[1][1]')) & ~(Assigned(x, '[1][2]')))
+        E.add_constraint(Swap_pos5pos8 & Assigned('blank', '[1][1]') & Assigned(x, '[2][1]') >> Assigned(x, '[1][1]') & Assigned('blank', '[2][1]') & ~(Assigned('blank', '[1][1]')) & ~(Assigned(x, '[2][1]')))
+        E.add_constraint(Swap_pos6pos9 & Assigned('blank', '[1][2]') & Assigned(x, '[2][2]') >> Assigned(x, '[1][2]') & Assigned('blank', '[2][2]') & ~(Assigned('blank', '[1][2]')) & ~(Assigned(x, '[2][2]')))
+        E.add_constraint(Swap_pos7pos8 & Assigned('blank', '[2][0]') & Assigned(x, '[2][1]') >> Assigned(x, '[2][0]') & Assigned('blank', '[2][1]') & ~(Assigned('blank', '[2][0]')) & ~(Assigned(x, '[2][1]')))
+        E.add_constraint(Swap_pos8pos9 & Assigned('blank', '[2][1]') & Assigned(x, '[2][2]') >> Assigned(x, '[2][1]') & Assigned('blank', '[2][2]') & ~(Assigned('blank', '[2][1]')) & ~(Assigned(x, '[2][2]')))
+    }
     
-    # constraints for correct positions of each tile 
-    E.add_constraint(Correct(1) >> Assigned(1, '[0][0]'))
-    E.add_constraint(Correct(2) >> Assigned(2, '[0][1]'))
-    E.add_constraint(Correct(3) >> Assigned(3, '[0][2]'))
-    E.add_constraint(Correct(4) >> Assigned(4, '[1][0]'))
-    E.add_constraint(Correct(5) >> Assigned(5, '[1][1]'))
-    E.add_constraint(Correct(6) >> Assigned(6, '[1][2]'))
-    E.add_constraint(Correct(7) >> Assigned(7, '[2][0]'))
-    E.add_constraint(Correct(8) >> Assigned(8, '[2][1]'))
-    E.add_constraint(Correct('blank') >> Assigned('blank', '[2][2]'))
 
     return E
 
