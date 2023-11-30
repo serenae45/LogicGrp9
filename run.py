@@ -144,7 +144,7 @@ class Swap_pos2pos3(Hashable):
         self.pos3 = pos3
 
     def __str__(self) -> str:
-        return f"({self.pos2}cswapped with {self.pos3})"
+        return f"({self.pos2} swapped with {self.pos3})"
 
 @proposition(E)
 class Swap_pos2pos5(Hashable):
@@ -204,7 +204,7 @@ class Swap_pos5pos8(Hashable):
 class Swap_pos6pos9(Hashable):
     def __init__(self, pos6, pos9) -> None:
         self.pos6 = pos6
-        self.pos6 = pos9
+        self.pos9 = pos9
 
     def __str__(self) -> str:
         return f"({self.pos6} swapped with {self.pos9})"
