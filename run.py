@@ -263,12 +263,12 @@ def build_theory():
     #     if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
     #         E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
-    if time == min_swaps:
-        E.add_constraint(clock(min_swaps))
+    # if time == min_swaps:
+    #     E.add_constraint(clock(min_swaps))
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
     E.add_constraint(Assigned(1, '[0][0]') & Assigned(2, '[0][1]') & Assigned(3, '[0][2]') & Assigned(4, '[1][0]') 
                      & Assigned(5, '[1][1]') & Assigned(6, '[1][2]') & Assigned(7, '[2][0]') & Assigned(8, '[2][1]') 
-                     & Assigned('blank', '[2][2]') & clock(min_swaps) >> goal_state(BOARD))
+                     & Assigned('blank', '[2][2]') >> goal_state(BOARD))
 
     for x in TILES:
         E.add_constraint(Swap_pos1pos2 & Assigned(x, '[0][0]') & Assigned('blank', '[0][1]') >> Assigned('blank', '[0][0]') & Assigned(x, '[0][1]') & ~(Assigned(x, '[0][0]')) & ~(Assigned('blank', '[0][1]')))
