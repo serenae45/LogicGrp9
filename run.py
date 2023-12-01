@@ -1,12 +1,11 @@
 
-from bauhaus import Encoding, proposition, constraint
+from bauhaus import Encoding, proposition, constraint, Or, And
 from bauhaus.utils import count_solutions, likelihood
 
 
 from directions import DIRECTIONS
 from board import BOARD
 from input_tiles import TILES, min_swaps
-from main import time
 
 
 # These two lines make sure a faster SAT solver is used.
@@ -39,7 +38,7 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
 @proposition(E) 
 class Correct(Hashable): # checks if a number is at the right position 
-    def __init__(self, tile, pos):
+    def __init__(self, tile):
         self.tile = tile
 
     def __str__(self) -> str:
@@ -125,11 +124,18 @@ class Swap_pos1pos2(Hashable):
         self.pos1 = pos1
         self.pos2 = pos2
 
+    def __str__(self) -> str:
+        return f"({self.pos1} swapped with {self.pos2})"
+
+
 @proposition(E)
 class Swap_pos1pos4(Hashable):
     def __init__(self, pos1, pos4) -> None:
         self.pos1 = pos1
         self.pos4 = pos4
+
+    def __str__(self) -> str:
+        return f"({self.pos1} swapped with {self.pos4})"
 
 @proposition(E)
 class Swap_pos2pos3(Hashable):
@@ -137,11 +143,17 @@ class Swap_pos2pos3(Hashable):
         self.pos2 = pos2
         self.pos3 = pos3
 
+    def __str__(self) -> str:
+        return f"({self.pos2} swapped with {self.pos3})"
+
 @proposition(E)
 class Swap_pos2pos5(Hashable):
     def __init__(self, pos2, pos5) -> None:
         self.pos2 = pos2
         self.pos5 = pos5
+
+    def __str__(self) -> str:
+        return f"({self.pos2} swapped with {self.pos5})"
 
 @proposition(E)
 class Swap_pos3pos6(Hashable):
@@ -149,25 +161,35 @@ class Swap_pos3pos6(Hashable):
         self.pos3 = pos3
         self.pos6 = pos6
 
+    def __str__(self) -> str:
+        return f"({self.pos3} swapped with {self.pos6})"
+
 @proposition(E)
 class Swap_pos4pos5(Hashable):
     def __init__(self, pos4, pos5) -> None:
         self.pos4 = pos4
         self.pos5 = pos5
 
-
+    def __str__(self) -> str:
+        return f"({self.pos4} swapped with {self.pos5})"
+    
 @proposition(E)
 class Swap_pos4pos7(Hashable):
     def __init__(self, pos4, pos7) -> None:
         self.pos4 = pos4
         self.pos7 = pos7
 
+    def __str__(self) -> str:
+        return f"({self.pos4} swapped with {self.pos7})"
+    
 @proposition(E)
 class Swap_pos5pos6(Hashable):
     def __init__(self, pos5, pos6) -> None:
         self.pos5 = pos5
         self.pos6 = pos6
 
+    def __str__(self) -> str:
+        return f"({self.pos5} swapped with {self.pos5})"
 
 @proposition(E)
 class Swap_pos5pos8(Hashable):
@@ -175,24 +197,35 @@ class Swap_pos5pos8(Hashable):
         self.pos5 = pos5
         self.pos8 = pos8
 
+    def __str__(self) -> str:
+        return f"({self.pos5} swapped with {self.pos8})"
+    
 @proposition(E)
 class Swap_pos6pos9(Hashable):
     def __init__(self, pos6, pos9) -> None:
         self.pos6 = pos6
-        self.pos6 = pos9
+        self.pos9 = pos9
 
+    def __str__(self) -> str:
+        return f"({self.pos6} swapped with {self.pos9})"
+    
 @proposition(E)
 class Swap_pos7pos8(Hashable):
     def __init__(self, pos7, pos8) -> None:
         self.pos7 = pos7
         self.pos8 = pos8
 
+    def __str__(self) -> str:
+        return f"({self.pos7} swapped with {self.pos8})"
+    
 @proposition(E)
 class Swap_pos8pos9(Hashable):
     def __init__(self, pos8, pos9) -> None:
         self.pos8 = pos8
         self.pos9 = pos9
-        
+
+    def __str__(self) -> str:
+        return f"({self.pos8} swapped with {self.pos9})"
 
 # assign propositions to variables 
 board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
@@ -311,10 +344,10 @@ if __name__ == "__main__":
     # After compilation (and only after), you can check some of the properties
     # of your model:
     print("\nSatisfiable: %s" % T.satisfiable())
-    # print("# Solutions: %d" % count_solutions(T))
-    # print("   Solution: %s" % T.solve())
+    print("# Solutions: %d" % count_solutions(T))
+    print("   Solution: %s" % T.solve())
 
-    # print("\nVariable likelihoods:")
+    print("\nVariable likelihoods:")
     # for v,vn in zip([a,b,c,x,y,z], 'abcxyz'):
     #     # Ensure that you only send these functions NNF formulas
     #     # Literals are compiled to NNF here
