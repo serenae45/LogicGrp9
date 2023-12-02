@@ -1,4 +1,3 @@
-
 from bauhaus import Encoding, proposition, constraint, Or, And
 from bauhaus.utils import count_solutions, likelihood
 
@@ -243,9 +242,9 @@ for t in TILES:
 
 # instantiate objects for other swap propositions
 
-swap_pos1pos2_obj = Swap_pos1pos2(pos1=(0, 0), pos2=(0, 1))
-swap_pos1pos4_obj = Swap_pos1pos4(pos1=(0, 0), pos4=(1, 0))
-swap_pos2pos3_obj = Swap_pos2pos3(pos2=(0, 1), pos3=(0, 2))
+Swap_pos1pos2_obj = Swap_pos1pos2(pos1=(0, 0), pos2=(0, 1))
+Swap_pos1pos4_obj = Swap_pos1pos4(pos1=(0, 0), pos4=(1, 0))
+Swap_pos2pos3_obj = Swap_pos2pos3(pos2=(0, 1), pos3=(0, 2))
 Swap_pos2pos5_obj = Swap_pos2pos5(pos2=(0, 1), pos5=(1, 1))
 Swap_pos3pos6_obj = Swap_pos3pos6(pos3=(0, 2), pos6=(1, 2))
 Swap_pos4pos5_obj = Swap_pos4pos5(pos4=(1, 0), pos5=(1, 1))
@@ -331,9 +330,9 @@ def build_theory():
                      & Assigned("blank", (2, 2)) >> goal_state(BOARD))
 
     for x in TILES:
-        E.add_constraint(swap_pos1pos2_obj & Assigned(x, (0, 0)) & Assigned('blank', (0, 1)) >> Assigned('blank', (0, 0)) & Assigned(x, (0, 1)) & ~(Assigned(x, (0, 0))) & ~(Assigned('blank', (0, 1))))
-        E.add_constraint(swap_pos1pos4_obj & Assigned(x, (0, 0)) & Assigned('blank', (1, 0)) >> Assigned('blank', (0, 0)) & Assigned(x, (1, 0)) & ~(Assigned(x, (0, 0))) & ~(Assigned('blank', (1, 0))))
-        E.add_constraint(swap_pos2pos3_obj & Assigned(x, (0, 1)) & Assigned('blank', (0, 2)) >> Assigned('blank', (0, 1)) & Assigned(x, (0, 2)) & ~(Assigned(x, (0, 1))) & ~(Assigned('blank', (0, 2))))
+        E.add_constraint(Swap_pos1pos2_obj & Assigned(x, (0, 0)) & Assigned('blank', (0, 1)) >> Assigned('blank', (0, 0)) & Assigned(x, (0, 1)) & ~(Assigned(x, (0, 0))) & ~(Assigned('blank', (0, 1))))
+        E.add_constraint(Swap_pos1pos4_obj & Assigned(x, (0, 0)) & Assigned('blank', (1, 0)) >> Assigned('blank', (0, 0)) & Assigned(x, (1, 0)) & ~(Assigned(x, (0, 0))) & ~(Assigned('blank', (1, 0))))
+        E.add_constraint(Swap_pos2pos3_obj & Assigned(x, (0, 1)) & Assigned('blank', (0, 2)) >> Assigned('blank', (0, 1)) & Assigned(x, (0, 2)) & ~(Assigned(x, (0, 1))) & ~(Assigned('blank', (0, 2))))
         E.add_constraint(Swap_pos2pos5_obj & Assigned(x, (0, 1)) & Assigned('blank', (1, 1)) >> Assigned('blank', (0, 1)) & Assigned(x, (1, 1)) & ~(Assigned(x, (0, 1))) & ~(Assigned('blank', (1, 1))))
         E.add_constraint(Swap_pos3pos6_obj & Assigned(x, (0, 2)) & Assigned('blank', (1, 2)) >> Assigned('blank', (0, 2)) & Assigned(x, (1, 2)) & ~(Assigned(x, (0, 2))) & ~(Assigned('blank', (1, 2))))
         E.add_constraint(Swap_pos4pos5_obj & Assigned(x, (1, 0)) & Assigned('blank', (1, 1)) >> Assigned('blank', (1, 0)) & Assigned(x, (1, 1)) & ~(Assigned(x, (1, 0))) & ~(Assigned('blank', (1, 1))))
@@ -344,9 +343,9 @@ def build_theory():
         E.add_constraint(Swap_pos7pos8_obj & Assigned(x, (2, 0)) & Assigned('blank', (2, 1)) >> Assigned('blank', (2, 0)) & Assigned(x, (2, 1)) & ~(Assigned(x, (2, 0))) & ~(Assigned('blank', (2, 1))))
         E.add_constraint(Swap_pos8pos9_obj & Assigned(x, (2, 1)) & Assigned('blank', (2, 2)) >> Assigned('blank', (2, 1)) & Assigned(x, (2, 2)) & ~(Assigned(x, (2, 1))) & ~(Assigned('blank', (2, 2))))
 
-        E.add_constraint(swap_pos1pos2_obj & Assigned('blank', (0, 0)) & Assigned(x, (0, 1)) >> Assigned(x, (0, 0)) & Assigned('blank', (0, 1)) & ~(Assigned('blank', (0, 0))) & ~(Assigned(x, (0, 1))))
-        E.add_constraint(swap_pos1pos4_obj & Assigned('blank', (0, 0)) & Assigned(x, (1, 0)) >> Assigned(x, (0, 0)) & Assigned('blank', (1, 0)) & ~(Assigned('blank', (0, 0))) & ~(Assigned(x, (1, 0))))
-        E.add_constraint(swap_pos2pos3_obj & Assigned('blank', (0, 1)) & Assigned(x, (0, 2)) >> Assigned(x, (0, 1)) & Assigned('blank', (0, 2)) & ~(Assigned('blank', (0, 1))) & ~(Assigned(x, (0, 2))))
+        E.add_constraint(Swap_pos1pos2_obj & Assigned('blank', (0, 0)) & Assigned(x, (0, 1)) >> Assigned(x, (0, 0)) & Assigned('blank', (0, 1)) & ~(Assigned('blank', (0, 0))) & ~(Assigned(x, (0, 1))))
+        E.add_constraint(Swap_pos1pos4_obj & Assigned('blank', (0, 0)) & Assigned(x, (1, 0)) >> Assigned(x, (0, 0)) & Assigned('blank', (1, 0)) & ~(Assigned('blank', (0, 0))) & ~(Assigned(x, (1, 0))))
+        E.add_constraint(Swap_pos2pos3_obj & Assigned('blank', (0, 1)) & Assigned(x, (0, 2)) >> Assigned(x, (0, 1)) & Assigned('blank', (0, 2)) & ~(Assigned('blank', (0, 1))) & ~(Assigned(x, (0, 2))))
         E.add_constraint(Swap_pos2pos5_obj & Assigned('blank', (0, 1)) & Assigned(x, (1, 1)) >> Assigned(x, (0, 1)) & Assigned('blank', (1, 1)) & ~(Assigned('blank', (0, 1))) & ~(Assigned(x, (1, 1))))
         E.add_constraint(Swap_pos3pos6_obj & Assigned('blank', (0, 2)) & Assigned(x, (1, 2)) >> Assigned(x, (0, 2)) & Assigned('blank', (1, 2)) & ~(Assigned('blank', (0, 2))) & ~(Assigned(x, (1, 2))))
         E.add_constraint(Swap_pos4pos5_obj & Assigned('blank', (1, 0)) & Assigned(x, (1, 1)) >> Assigned(x, (1, 0)) & Assigned('blank', (1, 1)) & ~(Assigned('blank', (1, 0))) & ~(Assigned(x, (1, 1))))
