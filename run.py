@@ -226,7 +226,7 @@ class Swap_pos8pos9(Hashable):
         return f"({self.pos8} swapped with {self.pos9})"
 
 # assign propositions to variables 
-board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
+# board = [[1,2,3], [4,5,6], [7,8,"empty_box"]] # test input board 
 
 #*** Instead of string representation (0, 0), use a tuple (0, 0)
 assigned_props = []
