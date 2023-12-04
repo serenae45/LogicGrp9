@@ -6,8 +6,9 @@ from board import BOARD
 from input_tiles import TILES, min_swaps
 
 # These two lines make sure a faster SAT solver is used.
-from nnf import config, var
+from nnf import config, Var
 config.sat_backend = "kissat"
+E = Encoding()
 
 
 """
@@ -101,8 +102,8 @@ class Assigned(Hashable): # checks if number is assigned to a position
     def __str__(self) -> str:
         return f"({self.tile} @ {self.pos})"
 
- @proposition(E) 
- class Correct(Hashable): # checks if a number is at the right position 
+@proposition(E) 
+class Correct(Hashable): # checks if a number is at the right position 
      def __init__(self, tile):
          self.tile = tile
 
@@ -282,9 +283,19 @@ class Swap_pos7pos8(Hashable):
 
     def __repr__(self) -> str:
         return f"({self.pos7} swapped with {self.pos8})"
+    
+@proposition(E)
+class Swap_pos8pos9(Hashable):
+    def __init__(self, pos8, pos9) -> None:
+        self.pos8 = pos8
+        self.pos9 = pos9
+
+    def __repr__(self):
+        return f"({self.pos8} swapped with {self.pos9})"
+
 
 # At most min_swaps of the A instances are true, this is the time constraints
-@constraint.at_most_k(E, min_swaps)
+# @constraint.at_most_k(E, min_swaps)
 @proposition(E)
 class Swap_tiles(Hashable):
     def __init__(self, pos_a, pos_b) -> None:
@@ -378,60 +389,78 @@ win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 #     right_props.append(Right(pos))
 
 
+Swap_pos1pos2_obj = Swap_pos1pos2(pos1=(0, 0), pos2=(0, 1))
+Swap_pos1pos4_obj = Swap_pos1pos4(pos1=(0, 0), pos4=(1, 0))
+Swap_pos2pos3_obj = Swap_pos2pos3(pos2=(0, 1), pos3=(0, 2))
+Swap_pos2pos5_obj = Swap_pos2pos5(pos2=(0, 1), pos5=(1, 1))
+Swap_pos3pos6_obj = Swap_pos3pos6(pos3=(0, 2), pos6=(1, 2))
+Swap_pos4pos5_obj = Swap_pos4pos5(pos4=(1, 0), pos5=(1, 1))
+Swap_pos4pos7_obj = Swap_pos4pos7(pos4=(1, 0), pos7=(2, 0))
+Swap_pos5pos6_obj = Swap_pos5pos6(pos5=(1, 1), pos6=(1, 2))
+Swap_pos5pos8_obj = Swap_pos5pos8(pos5=(1, 1), pos8=(2, 1))
+Swap_pos6pos9_obj = Swap_pos6pos9(pos6=(1, 2), pos9=(2, 2))
+Swap_pos7pos8_obj = Swap_pos7pos8(pos7=(2, 0), pos8=(2, 1))
+Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
 
+
+
+
+#Construct initial board
+def initialize_board(E):    
+    for i in range(3):
+        for j in range(3):
+            if(board[i][j] == '1'):
+                (Assigned('1', (i, j)))
+                for tile in TILES:
+                    if tile != '1':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == '2'):
+                E.add_constraint(Assigned('2',(i, j)))
+                for tile in TILES:
+                    if tile != '2':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == '3'):
+                E.add_constraint(Assigned('3', (i, j)))
+                for tile in TILES:
+                    if tile != '3':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == '4'):
+                E.add_constraint(Assigned('4', (i, j)))
+                for tile in TILES:
+                    if tile != '4':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == '5'):
+                E.add_constraint(Assigned('5', (i, j)))
+                for tile in TILES:
+                    if tile != '5':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == '6'):
+                E.add_constraint(Assigned('6', (i, j)))
+                for tile in TILES:
+                    if tile != '6':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == '7'):
+                E.add_constraint(Assigned('7', (i, j)))
+                for tile in TILES:
+                    if tile != '7':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == '8'):
+                E.add_constraint(Assigned('8', (i, j)))
+                for tile in TILES:
+                    if tile != '8':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            elif(board[i][j] == 'blank'):
+                E.add_constraint(Assigned('blank', (i, j)))
+                for tile in TILES:
+                    if tile != 'blank':
+                        E.add_constraint(~Assigned(tile, (i, j)))
+            else:
+                print("Error in setting up the board")
+
+                    
 
 def build_theory():
-    #Construct initial board
-    def initialize_board(E):
-        for i in range(3):
-            for j in range(3):
-                if(board[i][j] == '1'):
-                    E.add_constraint(Assigned('1', (i, j)))
-                    for tile in TILES:
-                        if tile != '1':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == '2'):
-                    E.add_constraint(Assigned('2',(i, j)))
-                    for tile in TILES:
-                        if tile != '2':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == '3'):
-                    E.add_constraint(Assigned('3', (i, j)))
-                    for tile in TILES:
-                        if tile != '3':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == '4'):
-                    E.add_constraint(Assigned('4', (i, j)))
-                    for tile in TILES:
-                        if tile != '4':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == '5'):
-                    E.add_constraint(Assigned('5', (i, j)))
-                    for tile in TILES:
-                        if tile != '5':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == '6'):
-                    E.add_constraint(Assigned('6', (i, j)))
-                    for tile in TILES:
-                        if tile != '6':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == '7'):
-                    E.add_constraint(Assigned('7', (i, j)))
-                    for tile in TILES:
-                        if tile != '7':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == '8'):
-                    E.add_constraint(Assigned('8', (i, j)))
-                    for tile in TILES:
-                        if tile != '8':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                elif(board[i][j] == 'blank'):
-                    E.add_constraint(Assigned('blank', (i, j)))
-                    for tile in TILES:
-                        if tile != 'blank':
-                            E.add_constraint(~Assigned(tile, (i, j)))
-                else:
-                    print("Error in setting up the board")
+    
     initialize_board(E)
 
     # # The initial tile has to be a blank in order to swap with a target tile
@@ -500,31 +529,71 @@ def build_theory():
         # E.add_constraint((Swap_tiles((1,2), (2,2)) & Assigned('blank', (1, 2)) & Assigned(x, (2, 2))) >> (Assigned(x, (1, 2)) & Assigned('blank', (2, 2)) & ~Swap_tiles((1,2), (2,2))))
         # E.add_constraint((Swap_tiles((2,0), (2,1)) & Assigned('blank', (2, 0)) & Assigned(x, (2, 1))) >> (Assigned(x, (2, 0)) & Assigned('blank', (2, 1)) & ~Swap_tiles((2,0), (2,1))))
         # E.add_constraint((Swap_tiles((2,1), (2,2)) & Assigned('blank', (2, 1)) & Assigned(x, (2, 2))) >> (Assigned(x, (2, 1)) & Assigned('blank', (2, 2)) & ~Swap_tiles((2,1), (2,2))))
-        E.add_constraint(Swap_tiles([0, 0], [0, 1]) & Assigned(x, [0, 0]) & Assigned('blank', [0, 1]) >> Assigned('blank', [0, 0]) & Assigned(x, [0, 1]) & ~Swap_tiles([0, 0], [0, 1]))  # negated swap so it does not keep swapping infinitely
-        E.add_constraint(Swap_tiles([0, 0], [1, 0]) & Assigned(x, [0, 0]) & Assigned('blank', [1, 0]) >> Assigned('blank', [0, 0]) & Assigned(x, [1, 0]) & ~Swap_tiles([0, 0], [1, 0]))
-        E.add_constraint(Swap_tiles([0, 1], [0, 2]) & Assigned(x, [0, 1]) & Assigned('blank', [0, 2]) >> Assigned('blank', [0, 1]) & Assigned(x, [0, 2]) & ~Swap_tiles([0, 1], [0, 2]))
-        E.add_constraint(Swap_tiles([0, 1], [1, 1]) & Assigned(x, [0, 1]) & Assigned('blank', [1, 1]) >> Assigned('blank', [0, 1]) & Assigned(x, [1, 1]) & ~Swap_tiles([0, 1], [1, 1]))
-        E.add_constraint(Swap_tiles([0, 2], [1, 2]) & Assigned(x, [0, 2]) & Assigned('blank', [1, 2]) >> Assigned('blank', [0, 2]) & Assigned(x, [1, 2]) & ~Swap_tiles([0, 2], [1, 2]))
-        E.add_constraint(Swap_tiles([1, 0], [1, 1]) & Assigned(x, [1, 0]) & Assigned('blank', [1, 1]) >> Assigned('blank', [1, 0]) & Assigned(x, [1, 1]) & ~Swap_tiles([1, 0], [1, 1]))
-        E.add_constraint(Swap_tiles([1, 0], [2, 0]) & Assigned(x, [1, 0]) & Assigned('blank', [2, 0]) >> Assigned('blank', [1, 0]) & Assigned(x, [2, 0]) & ~Swap_tiles([1, 0], [2, 0]))
-        E.add_constraint(Swap_tiles([1, 1], [1, 2]) & Assigned(x, [1, 1]) & Assigned('blank', [1, 2]) >> Assigned('blank', [1, 1]) & Assigned(x, [1, 2]) & ~Swap_tiles([1, 1], [1, 2]))
-        E.add_constraint(Swap_tiles([1, 1], [2, 1]) & Assigned(x, [1, 1]) & Assigned('blank', [2, 1]) >> Assigned('blank', [1, 1]) & Assigned(x, [2, 1]) & ~Swap_tiles([1, 1], [2, 1]))
-        E.add_constraint(Swap_tiles([1, 2], [2, 2]) & Assigned(x, [1, 2]) & Assigned('blank', [2, 2]) >> Assigned('blank', [1, 2]) & Assigned(x, [2, 2]) & ~Swap_tiles([1, 2], [2, 2]))
-        E.add_constraint(Swap_tiles([2, 0], [2, 1]) & Assigned(x, [2, 1]) & Assigned('blank', [2, 1]) >> Assigned('blank', [2, 0]) & Assigned(x, [2, 1]) & ~Swap_tiles([2, 0], [2, 1]))
-        E.add_constraint(Swap_tiles([2, 1], [2, 2]) & Assigned(x, [2, 1]) & Assigned('blank', [2, 2]) >> Assigned('blank', [2, 1]) & Assigned(x, [2, 2]) & ~Swap_tiles([2, 1], [2, 2]))
         
-        E.add_constraint(Swap_tiles([0, 0], [0, 1]) & Assigned('blank', [0, 0]) & Assigned(x, [0, 1]) >> Assigned(x, [0, 0]) & Assigned('blank', [0, 1]) & ~Swap_tiles([0, 0], [0, 1]))
-        E.add_constraint(Swap_tiles([0, 0], [1, 0]) & Assigned('blank', [0, 0]) & Assigned(x, [1, 0]) >> Assigned(x, [0, 0]) & Assigned('blank', [1, 0]) & ~Swap_tiles([0, 0], [1, 0]))
-        E.add_constraint(Swap_tiles([0, 1], [0, 2]) & Assigned('blank', [0, 1]) & Assigned(x, [0, 2]) >> Assigned(x, [0, 1]) & Assigned('blank', [0, 2]) & ~Swap_tiles([0, 1], [0, 2]))
-        E.add_constraint(Swap_tiles([0, 1], [1, 1]) & Assigned('blank', [0, 1]) & Assigned(x, [1, 1]) >> Assigned(x, [0, 1]) & Assigned('blank', [1, 1]) & ~Swap_tiles([0, 1], [1, 1]))
-        E.add_constraint(Swap_tiles([0, 2], [1, 2]) & Assigned('blank', [0, 2]) & Assigned(x, [1, 2]) >> Assigned(x, [0, 2]) & Assigned('blank', [1, 2]) & ~Swap_tiles([0, 2], [1, 2]))
-        E.add_constraint(Swap_tiles([1, 0], [1, 1]) & Assigned('blank', [1, 0]) & Assigned(x, [1, 1]) >> Assigned(x, [1, 0]) & Assigned('blank', [1, 1]) & ~Swap_tiles([1, 0], [1, 1]))
-        E.add_constraint(Swap_tiles([1, 0], [2, 0]) & Assigned('blank', [1, 0]) & Assigned(x, [2, 0]) >> Assigned(x, [1, 0]) & Assigned('blank', [2, 0]) & ~Swap_tiles([1, 0], [2, 0]))
-        E.add_constraint(Swap_tiles([1, 1], [1, 2]) & Assigned('blank', [1, 1]) & Assigned(x, [1, 2]) >> Assigned(x, [1, 1]) & Assigned('blank', [1, 2]) & ~Swap_tiles([1, 1], [1, 2]))
-        E.add_constraint(Swap_tiles([1, 1], [2, 1]) & Assigned('blank', [1, 1]) & Assigned(x, [2, 1]) >> Assigned(x, [1, 1]) & Assigned('blank', [2, 1]) & ~Swap_tiles([1, 1], [2, 1]))
-        E.add_constraint(Swap_tiles([1, 2], [2, 2]) & Assigned('blank', [1, 2]) & Assigned(x, [2, 2]) >> Assigned(x, [1, 2]) & Assigned('blank', [2, 2]) & ~Swap_tiles([1, 2], [2, 2]))
-        E.add_constraint(Swap_tiles([2, 0], [2, 1]) & Assigned('blank', [2, 0]) & Assigned(x, [2, 1]) >> Assigned(x, [2, 0]) & Assigned('blank', [2, 1]) & ~Swap_tiles([2, 0], [2, 1]))
-        E.add_constraint(Swap_tiles([2, 1], [2, 2]) & Assigned('blank', [2, 1]) & Assigned(x, [2, 2]) >> Assigned(x, [2, 1]) & Assigned('blank', [2, 2]) & ~Swap_tiles([2, 1], [2, 2]))
+        swap1 = [Swap_pos1pos2_obj, Assigned(x, (0, 0)), Assigned('blank', (0, 1))]
+        swap2 = [Assigned('blank', (0, 0)), Assigned(x, (0, 1)) , ~(Assigned(x, (0, 0))), ~(Assigned('blank', (0, 1)))]
+
+        swap3 = [Swap_pos1pos4_obj, Assigned(x, (0, 0)), Assigned('blank', (1, 0))]
+        swap4 = [Assigned('blank', (0, 0)) , Assigned(x, (1, 0)), ~(Assigned(x, (0, 0))),  ~(Assigned('blank', (1, 0)))]
+
+        swap5 = [Swap_pos2pos3_obj, Assigned(x, (0, 1)) , Assigned('blank', (0, 2))]
+        swap6 = [Assigned('blank', (0, 1)) & Assigned(x, (0, 2)) & ~(Assigned(x, (0, 1))) & ~(Assigned('blank', (0, 2)))]
+
+        swap7 = [Swap_pos2pos5_obj , Assigned(x, (0, 1)) , Assigned('blank', (1, 1))]
+        swap8 = [Assigned('blank', (0, 1)) & Assigned(x, (1, 1)) & ~(Assigned(x, (0, 1))) & ~(Assigned('blank', (1, 1)))]
+
+        swap9 = [Swap_pos3pos6_obj , Assigned(x, (0, 2)) , Assigned('blank', (1, 2))]
+        swap10=[Assigned('blank', (0, 2)) & Assigned(x, (1, 2)) & ~(Assigned(x, (0, 2))) & ~(Assigned('blank', (1, 2)))]
+
+        swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0)) , Assigned('blank', (1, 1))]
+        swap12 = [ Assigned('blank', (1, 0)) & Assigned(x, (1, 1)) & ~(Assigned(x, (1, 0))) & ~(Assigned('blank', (1, 1)))]
+
+        swap13 = [Swap_pos4pos7_obj , Assigned(x, (1, 0)) , Assigned('blank', (2, 0))]
+        swap14 = [Assigned('blank', (1, 0)) & Assigned(x, (2, 0)) & ~(Assigned(x, (1, 0))) & ~(Assigned('blank', (2, 0)))]
+
+        swap15 = [Swap_pos5pos6_obj , Assigned(x, (1, 1)) , Assigned('blank', (1, 2))]
+        swap16 =[Assigned('blank', (1, 1)) & Assigned(x, (1, 2)) & ~(Assigned(x, (1, 1))) & ~(Assigned('blank', (1, 2)))]
+
+        swap17= [Swap_pos5pos8_obj , Assigned(x, (1, 1)) , Assigned('blank', (2, 1))]
+        swap18 = [Assigned('blank', (1, 1)) & Assigned(x, (2, 1)) & ~(Assigned(x, (1, 1))) & ~(Assigned('blank', (2, 1)))]
+
+        swap19= [Swap_pos6pos9_obj , Assigned(x, (1, 2)) , Assigned('blank', (2, 2))]
+        swap20 = [ Assigned('blank', (1, 2)) & Assigned(x, (2, 2)) & ~(Assigned(x, (1, 2))) & ~(Assigned('blank', (2, 2)))]
+
+        swap21 = [Swap_pos7pos8_obj , Assigned(x, (2, 0)) , Assigned('blank', (2, 1))]
+        swap22 = [Assigned('blank', (2, 0)) & Assigned(x, (2, 1)) & ~(Assigned(x, (2, 0))) & ~(Assigned('blank', (2, 1)))]
+
+        swap23= [Swap_pos8pos9_obj , Assigned(x, (2, 1)) , Assigned('blank', (2, 2))]
+        swap24 = [Assigned('blank', (2, 1)) & Assigned(x, (2, 2)) & ~(Assigned(x, (2, 1))) & ~(Assigned('blank', (2, 2)))]
+
+        E.add_constraint(And(swap1) >> And(swap2))
+        E.add_constraint(And(swap3) >> And(swap4))
+        E.add_constraint(And(swap5) >> And(swap6))
+        E.add_constraint(And(swap7) >> And(swap8))
+        E.add_constraint(And(swap9) >> And(swap10))
+        E.add_constraint(And(swap11) >> And(swap1))
+        E.add_constraint(And(swap13) >> And(swap14))
+        E.add_constraint(And(swap15) >> And(swap16))
+        E.add_constraint(And(swap17) >> And(swap18))
+        E.add_constraint(And(swap19) >> And(swap20))
+        E.add_constraint(And(swap21) >> And(swap22))
+        E.add_constraint(And(swap23) >> And(swap24))
+
+        E.add_constraint(And(swap2) >> And(swap1))
+        E.add_constraint(And(swap4) >> And(swap3))
+        E.add_constraint(And(swap6) >> And(swap5))
+        E.add_constraint(And(swap8) >> And(swap7))
+        E.add_constraint(And(swap10) >> And(swap9))
+        E.add_constraint(And(swap12) >> And(swap11))
+        E.add_constraint(And(swap14) >> And(swap13))
+        E.add_constraint(And(swap16) >> And(swap15))
+        E.add_constraint(And(swap18) >> And(swap17))
+        E.add_constraint(And(swap20) >> And(swap19))
+        E.add_constraint(And(swap22) >> And(swap21))
+        E.add_constraint(And(swap24) >> And(swap23))
+    
+
+        return E
 
 
         #E.add_constraint(Swap_pos1pos2_obj & Assigned(x, (0, 0)) & Assigned('blank', (0, 1)) >> Assigned('blank', (0, 0)) & Assigned(x, (0, 1)) & ~(Assigned(x, (0, 0))) & ~(Assigned('blank', (0, 1))))
@@ -553,8 +622,6 @@ def build_theory():
         #E.add_constraint(Swap_pos7pos8_obj & Assigned('blank', (2, 0)) & Assigned(x, (2, 1)) >> Assigned(x, (2, 0)) & Assigned('blank', (2, 1)) & ~(Assigned('blank', (2, 0))) & ~(Assigned(x, (2, 1))))
         #E.add_constraint(Swap_pos8pos9_obj & Assigned('blank', (2, 1 )) & Assigned(x, (2, 2)) >> Assigned(x, (2, 1)) & Assigned('blank', (2, 2)) & ~(Assigned('blank', (2, 1))) & ~(Assigned(x, (2, 2))))
     
-
-    return E
 
 
 if __name__ == "__main__":
