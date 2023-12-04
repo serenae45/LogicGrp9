@@ -6,7 +6,7 @@ from board import BOARD
 from input_tiles import TILES, min_swaps
 
 # These two lines make sure a faster SAT solver is used.
-from nnf import config, Var
+from nnf import config
 config.sat_backend = "kissat"
 
 # Encoding that will store all of your constraints
@@ -529,7 +529,7 @@ def build_theory():
         
 
         # if the swaptimer reaches the number of minimum swaps for the board, clock is no longer true.
-        if swaptimer >= min_swaps:
+        if swaptimer == min_swaps:
             E.add_constraint(~clock(swaptimer, min_swaps))
         else: 
             E.add_constraint(clock(swaptimer, min_swaps))
