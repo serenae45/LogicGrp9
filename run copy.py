@@ -1,13 +1,14 @@
 from bauhaus import Encoding, proposition, constraint, Or, And
 from bauhaus.utils import count_solutions, likelihood
 
-from directions import DIRECTIONS
+
 from board import BOARD
 from input_tiles import TILES, min_swaps
 
 # These two lines make sure a faster SAT solver is used.
 from nnf import config, Var
 config.sat_backend = "kissat"
+E = Encoding()
 
 
 """
@@ -59,6 +60,8 @@ blank = [
     [Var('b@20'),Var('b@21'),Var('b@22')]]
 
 board = [['1', '2', '3'], ['4', 'blank', '6'], ['7', '5', '8']]
+
+swaptimer = 0
 
 
 # Encoding that will store all of your constraints
@@ -174,13 +177,14 @@ class Correct(Hashable): # checks if a number is at the right position
 #    def __str__(self) -> str:
 #        return f"(The board is in its goal state.)"
 
-# @proposition(E)
-# class clock(Hashable):
-#     def __init__(self, min_swaps) -> None:
-#         self.min_swaps = min_swaps
+@proposition(E)
+class clock(Hashable):
+    def __init__(self, swaptimer, min_swaps) -> None:
+        self.min_swaps = min_swaps
+        self.swaptimer = swaptimer
     
-#     def __str__(self) -> str:
-#         return f"(The board is solved within {self.min_swaps} moves.)"
+    def __str__(self) -> str:
+        return f"(The board is at time {self.swaptimer} and is below the minimum swaps.)"
     
 @proposition(E)
 class Swap_pos1pos2(Hashable):
@@ -373,7 +377,6 @@ win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 # Assigned(pb.pos7, (2, 0))
 # Assigned(pb.pos8, (2, 1)) 
 # Assigned(pb.pos9, (2, 2))
-# c = clock(min_swaps)
 
 # below_props = []
 # for pos in BOARD:
@@ -460,6 +463,13 @@ def build_theory():
                         E.add_constraint(~Assigned(tile, (i, j)))
             else:
                 print("Error in setting up the board")
+
+                    
+
+def build_theory():
+    
+    initialize_board(E)
+
     # # The initial tile has to be a blank in order to swap with a target tile
     # for pos in BOARD:
     #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
@@ -560,8 +570,40 @@ def build_theory():
         swap21 = [Swap_pos7pos8_obj , Assigned(x, (2, 0)) , Assigned('blank', (2, 1))]
         swap22 = [Assigned('blank', (2, 0)) , Assigned(x, (2, 1)) , ~(Assigned(x, (2, 0))) , ~(Assigned('blank', (2, 1)))]
 
-        swap23= [Swap_pos8pos9_obj , Assigned(x, (2, 1)) , Assigned('blank', (2, 2))]
+        swap23= [Swap_pos8pos9_obj , Assigned(x, (2, 1)) , Assigned('blank', (2, 2)), clock(swaptimer, min_swaps)]
         swap24 = [Assigned('blank', (2, 1)) , Assigned(x, (2, 2)) , ~(Assigned(x, (2, 1))) , ~(Assigned('blank', (2, 2)))]
+        
+
+        if swaptimer >= min_swaps:
+            E.add_constraint(~clock(swaptimer, min_swaps))
+        else: 
+            E.add_constraint(clock(swaptimer, min_swaps))
+
+
+        if Swap_pos1pos2_obj:
+            swaptimer += 1
+        if Swap_pos1pos4_obj:
+            swaptimer += 1
+        if Swap_pos2pos3_obj:
+            swaptimer += 1
+        if Swap_pos2pos5_obj:
+            swaptimer += 1
+        if Swap_pos3pos6_obj:
+            swaptimer += 1
+        if Swap_pos4pos5_obj:
+            swaptimer += 1
+        if Swap_pos4pos7_obj:
+            swaptimer += 1
+        if Swap_pos5pos6_obj:
+            swaptimer += 1
+        if Swap_pos5pos8_obj:
+            swaptimer += 1
+        if Swap_pos6pos9_obj:
+            swaptimer += 1
+        if Swap_pos7pos8_obj:
+            swaptimer += 1
+        if Swap_pos8pos9_obj:
+            swaptimer += 1
 
         E.add_constraint(And(swap1) >> And(swap2))
         E.add_constraint(And(swap3) >> And(swap4))
