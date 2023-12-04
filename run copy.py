@@ -8,7 +8,6 @@ from input_tiles import TILES, min_swaps
 # These two lines make sure a faster SAT solver is used.
 from nnf import config, Var
 config.sat_backend = "kissat"
-E = Encoding()
 
 
 """
@@ -405,8 +404,13 @@ Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
 
 
 
-#Construct initial board
-def initialize_board(E):    
+
+
+                    
+
+def build_theory():
+    
+    #Construct initial board
     for i in range(3):
         for j in range(3):
             if(board[i][j] == '1'):
@@ -456,13 +460,6 @@ def initialize_board(E):
                         E.add_constraint(~Assigned(tile, (i, j)))
             else:
                 print("Error in setting up the board")
-
-                    
-
-def build_theory():
-    
-    initialize_board(E)
-
     # # The initial tile has to be a blank in order to swap with a target tile
     # for pos in BOARD:
     #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
@@ -488,9 +485,9 @@ def build_theory():
     #     E.add_constraint(clock(min_swaps))
 
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
-    E.add_constraint(Assigned('1', (0, 0)) & Assigned('2', (0, 1)) & Assigned('3', (0, 2)) & Assigned('4', (1, 0)) 
-                     & Assigned('5', (1, 1)) & Assigned('6', (1, 2)) & Assigned('7', (2, 0)) & Assigned('8', (2, 1)) 
-                     & Assigned('blank', (2, 2)) >> win)
+    E.add_constraint(And(Assigned('1', (0, 0)), Assigned('2', (0, 1)) , Assigned('3', (0, 2)) , Assigned('4', (1, 0)) 
+                     , Assigned('5', (1, 1)) , Assigned('6', (1, 2)) , Assigned('7', (2, 0)) , Assigned('8', (2, 1)) 
+                     , Assigned('blank', (2, 2)) >> win))
     
 
     
@@ -537,41 +534,41 @@ def build_theory():
         swap4 = [Assigned('blank', (0, 0)) , Assigned(x, (1, 0)), ~(Assigned(x, (0, 0))),  ~(Assigned('blank', (1, 0)))]
 
         swap5 = [Swap_pos2pos3_obj, Assigned(x, (0, 1)) , Assigned('blank', (0, 2))]
-        swap6 = [Assigned('blank', (0, 1)) & Assigned(x, (0, 2)) & ~(Assigned(x, (0, 1))) & ~(Assigned('blank', (0, 2)))]
+        swap6 = [Assigned('blank', (0, 1)) , Assigned(x, (0, 2)) , ~(Assigned(x, (0, 1))) , ~(Assigned('blank', (0, 2)))]
 
         swap7 = [Swap_pos2pos5_obj , Assigned(x, (0, 1)) , Assigned('blank', (1, 1))]
-        swap8 = [Assigned('blank', (0, 1)) & Assigned(x, (1, 1)) & ~(Assigned(x, (0, 1))) & ~(Assigned('blank', (1, 1)))]
+        swap8 = [Assigned('blank', (0, 1)) , Assigned(x, (1, 1)) , ~(Assigned(x, (0, 1))) , ~(Assigned('blank', (1, 1)))]
 
         swap9 = [Swap_pos3pos6_obj , Assigned(x, (0, 2)) , Assigned('blank', (1, 2))]
-        swap10=[Assigned('blank', (0, 2)) & Assigned(x, (1, 2)) & ~(Assigned(x, (0, 2))) & ~(Assigned('blank', (1, 2)))]
+        swap10=[Assigned('blank', (0, 2)) , Assigned(x, (1, 2)) , ~(Assigned(x, (0, 2))) , ~(Assigned('blank', (1, 2)))]
 
         swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0)) , Assigned('blank', (1, 1))]
-        swap12 = [ Assigned('blank', (1, 0)) & Assigned(x, (1, 1)) & ~(Assigned(x, (1, 0))) & ~(Assigned('blank', (1, 1)))]
+        swap12 = [ Assigned('blank', (1, 0)) , Assigned(x, (1, 1)) , ~(Assigned(x, (1, 0))) , ~(Assigned('blank', (1, 1)))]
 
         swap13 = [Swap_pos4pos7_obj , Assigned(x, (1, 0)) , Assigned('blank', (2, 0))]
-        swap14 = [Assigned('blank', (1, 0)) & Assigned(x, (2, 0)) & ~(Assigned(x, (1, 0))) & ~(Assigned('blank', (2, 0)))]
+        swap14 = [Assigned('blank', (1, 0)) , Assigned(x, (2, 0)) , ~(Assigned(x, (1, 0))) , ~(Assigned('blank', (2, 0)))]
 
         swap15 = [Swap_pos5pos6_obj , Assigned(x, (1, 1)) , Assigned('blank', (1, 2))]
-        swap16 =[Assigned('blank', (1, 1)) & Assigned(x, (1, 2)) & ~(Assigned(x, (1, 1))) & ~(Assigned('blank', (1, 2)))]
+        swap16 =[Assigned('blank', (1, 1)) , Assigned(x, (1, 2)) , ~(Assigned(x, (1, 1))) , ~(Assigned('blank', (1, 2)))]
 
         swap17= [Swap_pos5pos8_obj , Assigned(x, (1, 1)) , Assigned('blank', (2, 1))]
-        swap18 = [Assigned('blank', (1, 1)) & Assigned(x, (2, 1)) & ~(Assigned(x, (1, 1))) & ~(Assigned('blank', (2, 1)))]
+        swap18 = [Assigned('blank', (1, 1)) , Assigned(x, (2, 1)) , ~(Assigned(x, (1, 1))) , ~(Assigned('blank', (2, 1)))]
 
         swap19= [Swap_pos6pos9_obj , Assigned(x, (1, 2)) , Assigned('blank', (2, 2))]
-        swap20 = [ Assigned('blank', (1, 2)) & Assigned(x, (2, 2)) & ~(Assigned(x, (1, 2))) & ~(Assigned('blank', (2, 2)))]
+        swap20 = [ Assigned('blank', (1, 2)) , Assigned(x, (2, 2)) , ~(Assigned(x, (1, 2))) , ~(Assigned('blank', (2, 2)))]
 
         swap21 = [Swap_pos7pos8_obj , Assigned(x, (2, 0)) , Assigned('blank', (2, 1))]
-        swap22 = [Assigned('blank', (2, 0)) & Assigned(x, (2, 1)) & ~(Assigned(x, (2, 0))) & ~(Assigned('blank', (2, 1)))]
+        swap22 = [Assigned('blank', (2, 0)) , Assigned(x, (2, 1)) , ~(Assigned(x, (2, 0))) , ~(Assigned('blank', (2, 1)))]
 
         swap23= [Swap_pos8pos9_obj , Assigned(x, (2, 1)) , Assigned('blank', (2, 2))]
-        swap24 = [Assigned('blank', (2, 1)) & Assigned(x, (2, 2)) & ~(Assigned(x, (2, 1))) & ~(Assigned('blank', (2, 2)))]
+        swap24 = [Assigned('blank', (2, 1)) , Assigned(x, (2, 2)) , ~(Assigned(x, (2, 1))) , ~(Assigned('blank', (2, 2)))]
 
         E.add_constraint(And(swap1) >> And(swap2))
         E.add_constraint(And(swap3) >> And(swap4))
         E.add_constraint(And(swap5) >> And(swap6))
         E.add_constraint(And(swap7) >> And(swap8))
         E.add_constraint(And(swap9) >> And(swap10))
-        E.add_constraint(And(swap11) >> And(swap1))
+        E.add_constraint(And(swap11) >> And(swap12))
         E.add_constraint(And(swap13) >> And(swap14))
         E.add_constraint(And(swap15) >> And(swap16))
         E.add_constraint(And(swap17) >> And(swap18))
