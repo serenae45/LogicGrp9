@@ -51,79 +51,6 @@ class Assigned(Hashable): # checks if number is assigned to a position
     def __str__(self) -> str:
         return f"({self.tile} @ {self.pos})"
 
-# @proposition(E) 
-# class Correct(Hashable): # checks if a number is at the right position 
-#      def __init__(self, tile):
-#          self.tile = tile
-
-#      def __str__(self) -> str:
-#          return f"({self.tile} is at the correct position)"
-     
-    
-# @proposition(E) 
-# class Blank(Hashable): # checks if a position is blank 
-#     def __init__(self, pos) -> None:
-#         self.pos = pos
-
-#     def __str__(self) -> str:
-#         return f"({self.pos} is blank.)"
-    
-# @proposition(E)
-# class Above(Hashable): # checks if a position [p][q] above the blank tile is valid
-#     def __init__(self, pos) -> None:
-#         self.pos = pos
-
-#     def __str__(self) -> str:
-#         return f"(The position above the blank is a valid position on the board.)"
-
-# @proposition(E)   
-# class Below(Hashable): # checks if a position [p][q] below the blank tile is valid
-#     def __init__(self, pos) -> None:
-#         self.pos = pos
-
-#     def __str__(self) -> str:
-#         return f"(The position below the blank is a valid position on the board.)"
-
-# @proposition(E)
-# class Left(Hashable): # checks if a position [p][q] to the left of blank tile is valid
-#     def __init__(self, pos) -> None:
-#         self.pos = pos
-
-#     def __str__(self) -> str:
-#         return f"(The position to the left of blank is a valid position on the board.)"
-
-# @proposition(E)
-# class Right(Hashable): # checks if a position [p][q] to the right of the blank tile is valid
-#     def __init__(self) -> None:
-#         self.pos = pos
-
-#     def __str__(self) -> str:
-#         return f"(The position to the right of blank is a valid position on the board.)"
-
-# @proposition(E)
-# class CanSwap(Hashable): # checks if tile can move into a position (position has to be blank)
-#     def __init__(self, pos, d) -> None:
-#         self.pos = pos
-#         self.d = d
-    
-#     def __str__(self) -> str:
-#         return f"({self.pos} can move {self.d}.)"
-    
-# @proposition(E)
-# class on_board(Hashable): # checks if position is on the board (valid position to move into)
-#     def __init__(self, pos) -> None:
-#         self.pos = pos
-
-#     def __str__(self) -> str:
-#         return f"({self.pos} is a valid position.)"
-    
-#@proposition(E)
-#class goal_state(Hashable):
-#    def __init__(self) -> None:
-#    
-#    def __str__(self) -> str:
-#        return f"(The board is in its goal state.)"
-
 @proposition(E)
 class clock(Hashable):
     def __init__(self, swaptimer, min_swaps) -> None:
@@ -224,6 +151,7 @@ class Swap_pos6pos9(Hashable):
 
     def __repr__(self) -> str:
         return f"({self.pos6} swapped with {self.pos9})"
+
     
 @proposition(E)
 class Swap_pos7pos8(Hashable):
@@ -267,32 +195,30 @@ class swapped(Hashable):
 
 # assign propositions to variables 
 
-#*** Instead of string representation (0, 0), use a tuple (0, 0)
-assigned_props = []
-for t in TILES:
-    for pos in BOARD:
-            assigned_props.append(Assigned(t, pos))
+assigned_props = [
+    Assigned(tile, pos)
+    for tile, pos in zip(TILES, BOARD)
+]
 
 
 # instantiate objects for other swap propositions
 
-# Swap_pos1pos2_obj = Swap_pos1pos2(pos1=(0, 0), pos2=(0, 1))
-# Swap_pos1pos4_obj = Swap_pos1pos4(pos1=(0, 0), pos4=(1, 0))
-# Swap_pos2pos3_obj = Swap_pos2pos3(pos2=(0, 1), pos3=(0, 2))
-# Swap_pos2pos5_obj = Swap_pos2pos5(pos2=(0, 1), pos5=(1, 1))
-# Swap_pos3pos6_obj = Swap_pos3pos6(pos3=(0, 2), pos6=(1, 2))
-# Swap_pos4pos5_obj = Swap_pos4pos5(pos4=(1, 0), pos5=(1, 1))
-# Swap_pos4pos7_obj = Swap_pos4pos7(pos4=(1, 0), pos7=(2, 0))
-# Swap_pos5pos6_obj = Swap_pos5pos6(pos5=(1, 1), pos6=(1, 2))
-# Swap_pos5pos8_obj = Swap_pos5pos8(pos5=(1, 1), pos8=(2, 1))
-# Swap_pos6pos9_obj = Swap_pos6pos9(pos6=(1, 2), pos9=(2, 2))
-# Swap_pos7pos8_obj = Swap_pos7pos8(pos7=(2, 0), pos8=(2, 1))
-# Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
+Swap_pos1pos2_obj = Swap_pos1pos2(pos1=(0, 0), pos2=(0, 1))
+Swap_pos1pos4_obj = Swap_pos1pos4(pos1=(0, 0), pos4=(1, 0))
+Swap_pos2pos3_obj = Swap_pos2pos3(pos2=(0, 1), pos3=(0, 2))
+Swap_pos2pos5_obj = Swap_pos2pos5(pos2=(0, 1), pos5=(1, 1))
+Swap_pos3pos6_obj = Swap_pos3pos6(pos3=(0, 2), pos6=(1, 2))
+Swap_pos4pos5_obj = Swap_pos4pos5(pos4=(1, 0), pos5=(1, 1))
+Swap_pos4pos7_obj = Swap_pos4pos7(pos4=(1, 0), pos7=(2, 0))
+Swap_pos5pos6_obj = Swap_pos5pos6(pos5=(1, 1), pos6=(1, 2))
+Swap_pos5pos8_obj = Swap_pos5pos8(pos5=(1, 1), pos8=(2, 1))
+Swap_pos6pos9_obj = Swap_pos6pos9(pos6=(1, 2), pos9=(2, 2))
+Swap_pos7pos8_obj = Swap_pos7pos8(pos7=(2, 0), pos8=(2, 1))
+Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
 
 
+    
 
-
-#TODO:put into build theory
 # Add these instantiated to constraints
 
 # correct_props = []
@@ -319,15 +245,16 @@ for t in TILES:
 #w = goal_state()
 pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
 win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
-# Assigned(pb.pos1,(0,0))
-# Assigned(pb.pos2,(0,1))
-# Assigned(pb.pos3, (0, 2))
-# Assigned(pb.pos4, (1, 0)) 
-# Assigned(pb.pos5, (1, 1))
-# Assigned(pb.pos6, (1, 2))
-# Assigned(pb.pos7, (2, 0))
-# Assigned(pb.pos8, (2, 1)) 
-# Assigned(pb.pos9, (2, 2))
+
+Assigned(pb.pos1, (0, 0))
+Assigned(pb.pos2, (0, 1))
+Assigned(pb.pos3, (0, 2))
+Assigned(pb.pos4, (1, 0)) 
+Assigned(pb.pos5, (1, 1))
+Assigned(pb.pos6, (1, 2))
+Assigned(pb.pos7, (2, 0))
+Assigned(pb.pos8, (2, 1)) 
+Assigned(pb.pos9, (2, 2))
 
 # below_props = []
 # for pos in BOARD:
@@ -366,8 +293,6 @@ Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
 
 def build_theory():
     # Encoding that will store all of your constraints
-    E = Encoding()
-
     #Construct initial board
     for i in range(3):
         for j in range(3):
@@ -443,9 +368,9 @@ def build_theory():
     # The swaptimer keeps track of the number of swaps that occur
     swaptimer = 0
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
-    E.add_constraint(And(Assigned('1', (0, 0)), Assigned('2', (0, 1)) , Assigned('3', (0, 2)) , Assigned('4', (1, 0)) 
-                     , Assigned('5', (1, 1)) , Assigned('6', (1, 2)) , Assigned('7', (2, 0)) , Assigned('8', (2, 1)) 
-                     , Assigned('blank', (2, 2), ~clock(swaptimer, min_swaps)) >> win))
+    E.add_constraint(And(Assigned('1', (0, 0)), Assigned('2', (0, 1)), Assigned('3', (0, 2)) , Assigned('4', (1, 0)), 
+                         Assigned('5', (1, 1)), Assigned('6', (1, 2)), Assigned('7', (2, 0)), Assigned('8', (2, 1)), 
+                         Assigned('blank', (2, 2)), ~clock(swaptimer, min_swaps) >> win))
     
 
     
@@ -498,7 +423,7 @@ def build_theory():
         swap8 = [Assigned('blank', (0, 1)) , Assigned(x, (1, 1)) , ~(Assigned(x, (0, 1))) , ~(Assigned('blank', (1, 1))), swapped((0, 1), (1, 1), swaptimer)]
 
         swap9 = [Swap_pos3pos6_obj , Assigned(x, (0, 2)) , Assigned('blank', (1, 2)), clock(swaptimer, min_swaps)]
-        swap10=[Assigned('blank', (0, 2)) , Assigned(x, (1, 2)) , ~(Assigned(x, (0, 2))) , ~(Assigned('blank', (1, 2))), swapped((0, 2), (1, 2), swaptimer)]
+        swap10= [Assigned('blank', (0, 2)) , Assigned(x, (1, 2)) , ~(Assigned(x, (0, 2))) , ~(Assigned('blank', (1, 2))), swapped((0, 2), (1, 2), swaptimer)]
 
         swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0)) , Assigned('blank', (1, 1)), clock(swaptimer, min_swaps)]
         swap12 = [ Assigned('blank', (1, 0)) , Assigned(x, (1, 1)) , ~(Assigned(x, (1, 0))) , ~(Assigned('blank', (1, 1))), swapped((1, 0), (1, 1), swaptimer)]
