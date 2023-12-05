@@ -11,6 +11,7 @@ config.sat_backend = "kissat"
 # Encoding that will store all of your constraints
 E = Encoding()
 
+swaptimer = 0
 board = [['1', '2', '3'], ['4', 'blank', '6'], ['7', '5', '8']]
 
 class Hashable:
@@ -43,12 +44,13 @@ class Puzzle_Board(Hashable):
 
 @proposition(E)
 class Assigned(Hashable): # checks if number is assigned to a position 
-    def __init__(self, tile, pos) -> None:
+    def __init__(self, tile, pos, swaptimer) -> None:
         self.tile = tile
         self.pos = pos
+        self.timer = swaptimer
 
     def __str__(self) -> str:
-        return f"({self.tile} @ {self.pos})"
+        return f"({self.tile} @ {self.pos} at time {self.timer})"
 
 @proposition(E)
 class clock(Hashable):
@@ -57,7 +59,7 @@ class clock(Hashable):
         self.swaptimer = swaptimer
     
     def __str__(self) -> str:
-        return f"(The board is at time {self.swaptimer} and is below the minimum swaps.)"
+        return f"(The board is at time {self.swaptimer}.)"
     
 @proposition(E)
 class Swap_pos1pos2(Hashable):
@@ -66,7 +68,7 @@ class Swap_pos1pos2(Hashable):
         self.pos2 = pos2
 
     def __repr__(self) -> str:
-        return f"({self.pos1} swapped with {self.pos2})" 
+        return f"()" 
   
 
 
@@ -77,7 +79,7 @@ class Swap_pos1pos4(Hashable):
         self.pos4 = pos4
 
     def __repr__(self) -> str:
-        return f"({self.pos1} swapped with {self.pos4})"
+        return f"()"
 
 @proposition(E)
 class Swap_pos2pos3(Hashable):
@@ -86,7 +88,7 @@ class Swap_pos2pos3(Hashable):
         self.pos3 = pos3
 
     def __repr__(self) -> str:
-        return f"({self.pos2} swapped with {self.pos3})"
+        return f"()"
 
 @proposition(E)
 class Swap_pos2pos5(Hashable):
@@ -95,7 +97,7 @@ class Swap_pos2pos5(Hashable):
         self.pos5 = pos5
 
     def __repr__(self) -> str:
-        return f"({self.pos2} swapped with {self.pos5})"
+        return f"()"
 
 @proposition(E)
 class Swap_pos3pos6(Hashable):
@@ -104,7 +106,7 @@ class Swap_pos3pos6(Hashable):
         self.pos6 = pos6
 
     def __repr__(self) -> str:
-        return f"({self.pos3} swapped with {self.pos6})"
+        return f"()"
 
 @proposition(E)
 class Swap_pos4pos5(Hashable):
@@ -113,7 +115,7 @@ class Swap_pos4pos5(Hashable):
         self.pos5 = pos5
 
     def __repr__(self) -> str:
-        return f"({self.pos4} swapped with {self.pos5})"
+        return f"()"
     
 @proposition(E)
 class Swap_pos4pos7(Hashable):
@@ -122,7 +124,7 @@ class Swap_pos4pos7(Hashable):
         self.pos7 = pos7
 
     def __repr__(self) -> str:
-        return f"({self.pos4} swapped with {self.pos7})"
+        return f"()"
     
 @proposition(E)
 class Swap_pos5pos6(Hashable):
@@ -131,7 +133,7 @@ class Swap_pos5pos6(Hashable):
         self.pos6 = pos6
 
     def __repr__(self) -> str:
-        return f"({self.pos5} swapped with {self.pos6})"
+        return f"()"
 
 @proposition(E)
 class Swap_pos5pos8(Hashable):
@@ -140,7 +142,7 @@ class Swap_pos5pos8(Hashable):
         self.pos8 = pos8
 
     def __repr__(self) -> str:
-        return f"({self.pos5} swapped with {self.pos8})"
+        return f"()"
     
 @proposition(E)
 class Swap_pos6pos9(Hashable):
@@ -149,7 +151,7 @@ class Swap_pos6pos9(Hashable):
         self.pos9 = pos9
 
     def __repr__(self) -> str:
-        return f"({self.pos6} swapped with {self.pos9})"
+        return f"()"
 
     
 @proposition(E)
@@ -159,7 +161,7 @@ class Swap_pos7pos8(Hashable):
         self.pos8 = pos8
 
     def __repr__(self) -> str:
-        return f"({self.pos7} swapped with {self.pos8})"
+        return f"()"
     
 @proposition(E)
 class Swap_pos8pos9(Hashable):
@@ -168,7 +170,7 @@ class Swap_pos8pos9(Hashable):
         self.pos9 = pos9
 
     def __repr__(self):
-        return f"({self.pos8} swapped with {self.pos9})"
+        return f"()"
 
 
 # At most min_swaps of the A instances are true, this is the time constraints
@@ -193,8 +195,19 @@ class swapped(Hashable):
         return f"(The tiles at positions {self.pos1} and {self.pos2} swapped at time {self.swaptimer})"
 
 # assign propositions to variables 
+assigned_props = []
+for t in TILES:
+    for pos in BOARD:
+        for i in range(20):
+            assigned_props.append(Assigned(t, pos, i))
 
-assigned_props = [Assigned(tile, pos) for tile, pos in zip(TILES, BOARD)]
+#assigned_props = [Assigned(tile, pos, swaptimer) for tile, pos in zip(TILES, BOARD)]
+swapped_props = []
+for pos1 in BOARD:
+    for pos2 in BOARD:
+        if pos1 != pos2:
+            for i in range(20):
+                swapped_props.append(swapped(pos1, pos2, i))
 
 
 
@@ -217,73 +230,73 @@ Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
     
 
 #w = goal_state()
-pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
+# pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
 win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 
-Assigned(pb.pos1, (0, 0))
-Assigned(pb.pos2, (0, 1))
-Assigned(pb.pos3, (0, 2))
-Assigned(pb.pos4, (1, 0))
-Assigned(pb.pos5, (1, 1))
-Assigned(pb.pos6, (1, 2))
-Assigned(pb.pos7, (2, 0))
-Assigned(pb.pos8, (2, 1))
-Assigned(pb.pos9, (2, 2))
+# Assigned(pb.pos1, (0, 0))
+# Assigned(pb.pos2, (0, 1))
+# Assigned(pb.pos3, (0, 2))
+# Assigned(pb.pos4, (1, 0))
+# Assigned(pb.pos5, (1, 1))
+# Assigned(pb.pos6, (1, 2))
+# Assigned(pb.pos7, (2, 0))
+# Assigned(pb.pos8, (2, 1))
+# Assigned(pb.pos9, (2, 2))
 
 
 
                     
 
-def build_theory():
+def build_theory(swaptimer):
     # Encoding that will store all of your constraints
     #Construct initial board
     for i in range(3):
         for j in range(3):
             if(board[i][j] == '1'):
-                E.add_constraint(Assigned('1', (i, j)))
+                E.add_constraint(Assigned('1', (i, j), 0))
                 for tile in TILES:
                     if tile != '1':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == '2'):
-                E.add_constraint(Assigned('2',(i, j)))
+                E.add_constraint(Assigned('2',(i, j), 0))
                 for tile in TILES:
                     if tile != '2':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == '3'):
-                E.add_constraint(Assigned('3', (i, j)))
+                E.add_constraint(Assigned('3', (i, j), 0))
                 for tile in TILES:
                     if tile != '3':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == '4'):
-                E.add_constraint(Assigned('4', (i, j)))
+                E.add_constraint(Assigned('4', (i, j), 0))
                 for tile in TILES:
                     if tile != '4':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == '5'):
-                E.add_constraint(Assigned('5', (i, j)))
+                E.add_constraint(Assigned('5', (i, j), 0))
                 for tile in TILES:
                     if tile != '5':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == '6'):
-                E.add_constraint(Assigned('6', (i, j)))
+                E.add_constraint(Assigned('6', (i, j), 0))
                 for tile in TILES:
                     if tile != '6':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j, 0)))
             elif(board[i][j] == '7'):
-                E.add_constraint(Assigned('7', (i, j)))
+                E.add_constraint(Assigned('7', (i, j), 0))
                 for tile in TILES:
                     if tile != '7':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == '8'):
-                E.add_constraint(Assigned('8', (i, j)))
+                E.add_constraint(Assigned('8', (i, j), 0))
                 for tile in TILES:
                     if tile != '8':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == 'blank'):
-                E.add_constraint(Assigned('blank', (i, j)))
+                E.add_constraint(Assigned('blank', (i, j), 0))
                 for tile in TILES:
                     if tile != 'blank':
-                        E.add_constraint(~Assigned(tile, (i, j)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             else:
                 print("Error in setting up the board")
 
@@ -310,11 +323,11 @@ def build_theory():
     #         E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
     # The swaptimer keeps track of the number of swaps that occur
-    swaptimer = 0
+    
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
-    E.add_constraint(And(Assigned('1', (0, 0)), Assigned('2', (0, 1)), Assigned('3', (0, 2)) , Assigned('4', (1, 0)), 
-                         Assigned('5', (1, 1)), Assigned('6', (1, 2)), Assigned('7', (2, 0)), Assigned('8', (2, 1)), 
-                         Assigned('blank', (2, 2)), ~clock(swaptimer, min_swaps) >> win))
+    E.add_constraint(And(Assigned('1', (0, 0), min_swaps), Assigned('2', (0, 1), min_swaps), Assigned('3', (0, 2), min_swaps) , Assigned('4', (1, 0), min_swaps), 
+                         Assigned('5', (1, 1), min_swaps), Assigned('6', (1, 2), min_swaps), Assigned('7', (2, 0), min_swaps), Assigned('8', (2, 1), min_swaps), 
+                         Assigned('blank', (2, 2), min_swaps), ~clock(swaptimer, min_swaps) >> win))
     
 
     
@@ -329,45 +342,45 @@ def build_theory():
     #This swaps the tiles
     for x in TILES:
         
-        swap1 = [Swap_pos1pos2_obj, Assigned(x, (0, 0)), Assigned('blank', (0, 1)), clock(swaptimer, min_swaps)]
-        swap2 = [Assigned('blank', (0, 0)), Assigned(x, (0, 1)) , ~(Assigned(x, (0, 0))), ~(Assigned('blank', (0, 1))), swapped((0, 0), (0, 1), swaptimer)]
+        swap1 = [Swap_pos1pos2_obj, Assigned(x, (0, 0), swaptimer), Assigned('blank', (0, 1), swaptimer), clock(swaptimer, min_swaps)]
+        swap2 = [Assigned('blank', (0, 0), swaptimer), Assigned(x, (0, 1), swaptimer), swapped((0, 0), (0, 1), swaptimer)]
 
-        swap3 = [Swap_pos1pos4_obj, Assigned(x, (0, 0)), Assigned('blank', (1, 0)), clock(swaptimer, min_swaps)]
-        swap4 = [Assigned('blank', (0, 0)) , Assigned(x, (1, 0)), ~(Assigned(x, (0, 0))),  ~(Assigned('blank', (1, 0))), swapped((0, 0), (1, 0), swaptimer)]
+        swap3 = [Swap_pos1pos4_obj, Assigned(x, (0, 0), swaptimer), Assigned('blank', (1, 0), swaptimer), clock(swaptimer, min_swaps)]
+        swap4 = [Assigned('blank', (0, 0), swaptimer) , Assigned(x, (1, 0), swaptimer), swapped((0, 0), (1, 0), swaptimer)]
 
-        swap5 = [Swap_pos2pos3_obj, Assigned(x, (0, 1)) , Assigned('blank', (0, 2)), clock(swaptimer, min_swaps)]
-        swap6 = [Assigned('blank', (0, 1)) , Assigned(x, (0, 2)) , ~(Assigned(x, (0, 1))) , ~(Assigned('blank', (0, 2))), swapped((0, 1), (0, 2), swaptimer)]
+        swap5 = [Swap_pos2pos3_obj, Assigned(x, (0, 1), swaptimer) , Assigned('blank', (0, 2), swaptimer), clock(swaptimer, min_swaps)]
+        swap6 = [Assigned('blank', (0, 1), swaptimer) , Assigned(x, (0, 2), swaptimer), swapped((0, 1), (0, 2), swaptimer)]
 
-        swap7 = [Swap_pos2pos5_obj , Assigned(x, (0, 1)) , Assigned('blank', (1, 1)), clock(swaptimer, min_swaps)]
-        swap8 = [Assigned('blank', (0, 1)) , Assigned(x, (1, 1)) , ~(Assigned(x, (0, 1))) , ~(Assigned('blank', (1, 1))), swapped((0, 1), (1, 1), swaptimer)]
+        swap7 = [Swap_pos2pos5_obj , Assigned(x, (0, 1), swaptimer) , Assigned('blank', (1, 1), swaptimer), clock(swaptimer, min_swaps)]
+        swap8 = [Assigned('blank', (0, 1), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((0, 1), (1, 1), swaptimer)]
 
-        swap9 = [Swap_pos3pos6_obj , Assigned(x, (0, 2)) , Assigned('blank', (1, 2)), clock(swaptimer, min_swaps)]
-        swap10 = [Assigned('blank', (0, 2)) , Assigned(x, (1, 2)) , ~(Assigned(x, (0, 2))) , ~(Assigned('blank', (1, 2))), swapped((0, 2), (1, 2), swaptimer)]
+        swap9 = [Swap_pos3pos6_obj , Assigned(x, (0, 2), swaptimer) , Assigned('blank', (1, 2), swaptimer), clock(swaptimer, min_swaps)]
+        swap10 = [Assigned('blank', (0, 2), swaptimer) , Assigned(x, (1, 2), swaptimer), swapped((0, 2), (1, 2), swaptimer)]
 
-        swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0)) , Assigned('blank', (1, 1)), clock(swaptimer, min_swaps)]
-        swap12 = [ Assigned('blank', (1, 0)) , Assigned(x, (1, 1)) , ~(Assigned(x, (1, 0))) , ~(Assigned('blank', (1, 1))), swapped((1, 0), (1, 1), swaptimer)]
+        swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0), swaptimer) , Assigned('blank', (1, 1), swaptimer), clock(swaptimer, min_swaps)]
+        swap12 = [ Assigned('blank', (1, 0), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((1, 0), (1, 1), swaptimer)]
 
-        swap13 = [Swap_pos4pos7_obj , Assigned(x, (1, 0)) , Assigned('blank', (2, 0)), clock(swaptimer, min_swaps)]
-        swap14 = [Assigned('blank', (1, 0)) , Assigned(x, (2, 0)) , ~(Assigned(x, (1, 0))) , ~(Assigned('blank', (2, 0))), swapped((1, 0), (2, 0), swaptimer)]
+        swap13 = [Swap_pos4pos7_obj , Assigned(x, (1, 0), swaptimer) , Assigned('blank', (2, 0), swaptimer), clock(swaptimer, min_swaps)]
+        swap14 = [Assigned('blank', (1, 0), swaptimer) , Assigned(x, (2, 0), swaptimer), swapped((1, 0), (2, 0), swaptimer)]
 
-        swap15 = [Swap_pos5pos6_obj , Assigned(x, (1, 1)) , Assigned('blank', (1, 2)), clock(swaptimer, min_swaps)]
-        swap16 = [Assigned('blank', (1, 1)) , Assigned(x, (1, 2)) , ~(Assigned(x, (1, 1))) , ~(Assigned('blank', (1, 2))), swapped((1, 1), (1, 2), swaptimer)]
+        swap15 = [Swap_pos5pos6_obj , Assigned(x, (1, 1), swaptimer) , Assigned('blank', (1, 2), swaptimer), clock(swaptimer, min_swaps)]
+        swap16 = [Assigned('blank', (1, 1), swaptimer) , Assigned(x, (1, 2), swaptimer), swapped((1, 1), (1, 2), swaptimer)]
 
-        swap17 = [Swap_pos5pos8_obj , Assigned(x, (1, 1)) , Assigned('blank', (2, 1)), clock(swaptimer, min_swaps)]
-        swap18 = [Assigned('blank', (1, 1)) , Assigned(x, (2, 1)) , ~(Assigned(x, (1, 1))) , ~(Assigned('blank', (2, 1))), swapped((2, 1), (1, 1), swaptimer)]
+        swap17 = [Swap_pos5pos8_obj , Assigned(x, (1, 1), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, min_swaps)]
+        swap18 = [Assigned('blank', (1, 1), swaptimer) , Assigned(x, (2, 1), swaptimer), swapped((2, 1), (1, 1), swaptimer)]
 
-        swap19 = [Swap_pos6pos9_obj , Assigned(x, (1, 2)) , Assigned('blank', (2, 2)), clock(swaptimer, min_swaps)]
-        swap20 = [Assigned('blank', (1, 2)) , Assigned(x, (2, 2)) , ~(Assigned(x, (1, 2))) , ~(Assigned('blank', (2, 2))), swapped((1, 2), (2, 2), swaptimer)]
+        swap19 = [Swap_pos6pos9_obj , Assigned(x, (1, 2), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, min_swaps)]
+        swap20 = [Assigned('blank', (1, 2), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((1, 2), (2, 2), swaptimer)]
 
-        swap21 = [Swap_pos7pos8_obj , Assigned(x, (2, 0)) , Assigned('blank', (2, 1)), clock(swaptimer, min_swaps)]
-        swap22 = [Assigned('blank', (2, 0)), Assigned(x, (2, 1)), ~(Assigned(x, (2, 0))), ~(Assigned('blank', (2, 1))), swapped((2, 0), (2, 1), swaptimer)]
+        swap21 = [Swap_pos7pos8_obj , Assigned(x, (2, 0), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, min_swaps)]
+        swap22 = [Assigned('blank', (2, 0), swaptimer), Assigned(x, (2, 1), swaptimer), swapped((2, 0), (2, 1), swaptimer)]
 
-        swap23 = [Swap_pos8pos9_obj , Assigned(x, (2, 1)) , Assigned('blank', (2, 2)), clock(swaptimer, min_swaps)]
-        swap24 = [Assigned('blank', (2, 1)) , Assigned(x, (2, 2)) , ~(Assigned(x, (2, 1))) , ~(Assigned('blank', (2, 2))), swapped((2, 1), (2, 2), swaptimer)]
+        swap23 = [Swap_pos8pos9_obj , Assigned(x, (2, 1), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, min_swaps)]
+        swap24 = [Assigned('blank', (2, 1), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((2, 1), (2, 2), swaptimer)]
         
 
         # if the swaptimer reaches the number of minimum swaps for the board, clock is no longer true.
-        if swaptimer == min_swaps:
+        if swaptimer >= min_swaps:
             E.add_constraint(~clock(swaptimer, min_swaps))
         else: 
             E.add_constraint(clock(swaptimer, min_swaps))
@@ -375,8 +388,9 @@ def build_theory():
         # incrementing swaptimer when a swap between two tiles occur
         for pos1 in BOARD:
             for pos2 in BOARD:
-                if pos1 != pos2 and swapped(pos1, pos2, swaptimer):
-                    swaptimer += 1
+                if pos1 != pos2:
+                    if swapped(pos1, pos2, swaptimer):
+                        swaptimer += 1
 
 
 
@@ -441,7 +455,7 @@ def build_theory():
 
 if __name__ == "__main__":
 
-    T = build_theory()
+    T = build_theory(swaptimer)
     # Don't compile until you're finished adding all your constraints!
     T = T.compile()
     # After compilation (and only after), you can check some of the properties
