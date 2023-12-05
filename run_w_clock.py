@@ -11,6 +11,7 @@ config.sat_backend = "kissat"
 # Encoding that will store all of your constraints
 E = Encoding()
 
+swaptimer = 0
 board = [['1', '2', '3'], ['4', 'blank', '6'], ['7', '5', '8']]
 
 class Hashable:
@@ -194,8 +195,19 @@ class swapped(Hashable):
         return f"(The tiles at positions {self.pos1} and {self.pos2} swapped at time {self.swaptimer})"
 
 # assign propositions to variables 
+assigned_props = []
+for t in TILES:
+    for pos in BOARD:
+        for i in range(20):
+            assigned_props.append(Assigned(t, pos, i))
 
-assigned_props = [Assigned(tile, pos) for tile, pos in zip(TILES, BOARD)]
+#assigned_props = [Assigned(tile, pos, swaptimer) for tile, pos in zip(TILES, BOARD)]
+swapped_props = []
+for pos1 in BOARD:
+    for pos2 in BOARD:
+        if pos1 != pos2:
+            for i in range(20):
+                swapped_props.append(swapped(pos1, pos2, i))
 
 
 
@@ -235,7 +247,7 @@ win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 
                     
 
-def build_theory():
+def build_theory(swaptimer):
     # Encoding that will store all of your constraints
     #Construct initial board
     for i in range(3):
@@ -311,7 +323,7 @@ def build_theory():
     #         E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
     # The swaptimer keeps track of the number of swaps that occur
-    swaptimer = 0
+    
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
     E.add_constraint(And(Assigned('1', (0, 0), min_swaps), Assigned('2', (0, 1), min_swaps), Assigned('3', (0, 2), min_swaps) , Assigned('4', (1, 0), min_swaps), 
                          Assigned('5', (1, 1), min_swaps), Assigned('6', (1, 2), min_swaps), Assigned('7', (2, 0), min_swaps), Assigned('8', (2, 1), min_swaps), 
@@ -443,7 +455,7 @@ def build_theory():
 
 if __name__ == "__main__":
 
-    T = build_theory()
+    T = build_theory(swaptimer)
     # Don't compile until you're finished adding all your constraints!
     T = T.compile()
     # After compilation (and only after), you can check some of the properties
