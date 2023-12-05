@@ -268,17 +268,11 @@ class swapped(Hashable):
 # assign propositions to variables 
 
 #*** Instead of string representation (0, 0), use a tuple (0, 0)
-# assigned_props = []
-# for t in TILES:
-#     for pos in BOARD:
-#             assigned_props.append(Assigned(t, pos))
-#***
+assigned_props = []
+for t in TILES:
+    for pos in BOARD:
+            assigned_props.append(Assigned(t, pos))
 
-
-# assigned_props = []
-# for t in TILES:
-#     for pos in BOARD:
-#         assigned_props.append(Assigned(t, pos))
 
 # instantiate objects for other swap propositions
 
