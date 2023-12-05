@@ -252,20 +252,8 @@ class Swap_tiles(Hashable):
 
 # assign propositions to variables 
 
-#*** Instead of string representation (0, 0), use a tuple (0, 0)
-assigned_props = []
-for t in TILES:
-    for pos in BOARD:
-            assigned_props.append(Assigned(t, pos))
-#***
+assigned_props = [Assigned(tile, pos) for tile, pos in zip(TILES, BOARD)]
 
-
-# assigned_props = []
-# for t in TILES:
-#     for pos in BOARD:
-#         assigned_props.append(Assigned(t, pos))
-
-# instantiate objects for other swap propositions
 
 Swap_pos1pos2_obj = Swap_pos1pos2(pos1=(0, 0), pos2=(0, 1))
 Swap_pos1pos4_obj = Swap_pos1pos4(pos1=(0, 0), pos4=(1, 0))
@@ -310,15 +298,17 @@ Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
 #w = goal_state()
 pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
 win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
-E.add_constraint(Assigned(pb.pos1, "[0, 0]"))
-Assigned(pb.pos2, "[0, 1]")
-Assigned(pb.pos3, "[0, 2]")
-Assigned(pb.pos4, "[1, 0]") 
-Assigned(pb.pos5, "[1, 1]")
-Assigned(pb.pos6, "[1, 2]")
-Assigned(pb.pos7, "[2, 0]")
-Assigned(pb.pos8, "[2, 1]") 
-Assigned(pb.pos9, "[2, 2]")
+
+#Do we need to add these as constraints??
+E.add_constraint(Assigned(pb.pos1, (0, 0)))
+E.add_constraint(Assigned(pb.pos2, (0, 1)))
+E.add_constraint(Assigned(pb.pos3, (0, 2)))
+E.add_constraint(Assigned(pb.pos4, (1, 0)))
+E.add_constraint(Assigned(pb.pos5, (1, 1)))
+E.add_constraint(Assigned(pb.pos6, (1, 2)))
+E.add_constraint(Assigned(pb.pos7, (2, 0)))
+E.add_constraint(Assigned(pb.pos8, (2, 1)))
+E.add_constraint(Assigned(pb.pos9, (2, 2)))
 # c = clock(min_swaps)
 
 # below_props = []

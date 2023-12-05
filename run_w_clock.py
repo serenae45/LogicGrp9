@@ -1,7 +1,6 @@
 from bauhaus import Encoding, proposition, constraint, Or, And
 from bauhaus.utils import count_solutions, likelihood
 
-
 from board import BOARD
 from input_tiles import TILES, min_swaps
 
@@ -39,7 +38,7 @@ class Puzzle_Board(Hashable):
         self.pos8 = tile8
         self.pos9 = tile9
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return f"([[{self.pos1},{self.pos2},{self.pos3}],[{self.pos4},{self.pos5},{self.pos6}],[{self.pos7},{self.pos8},{self.pos9}]])"
 
 @proposition(E)
@@ -224,11 +223,11 @@ win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 Assigned(pb.pos1, (0, 0))
 Assigned(pb.pos2, (0, 1))
 Assigned(pb.pos3, (0, 2))
-Assigned(pb.pos4, (1, 0)) 
+Assigned(pb.pos4, (1, 0))
 Assigned(pb.pos5, (1, 1))
 Assigned(pb.pos6, (1, 2))
 Assigned(pb.pos7, (2, 0))
-Assigned(pb.pos8, (2, 1)) 
+Assigned(pb.pos8, (2, 1))
 Assigned(pb.pos9, (2, 2))
 
 
@@ -435,7 +434,7 @@ def build_theory():
         #E.add_constraint(Swap_pos6pos9_obj & Assigned('blank', (1, 2)) & Assigned(x, (2, 2)) >> Assigned(x, (1, 2)) & Assigned('blank', (2, 2)) & ~(Assigned('blank', (1, 2))) & ~(Assigned(x, (2, 2))))
         #E.add_constraint(Swap_pos7pos8_obj & Assigned('blank', (2, 0)) & Assigned(x, (2, 1)) >> Assigned(x, (2, 0)) & Assigned('blank', (2, 1)) & ~(Assigned('blank', (2, 0))) & ~(Assigned(x, (2, 1))))
         #E.add_constraint(Swap_pos8pos9_obj & Assigned('blank', (2, 1 )) & Assigned(x, (2, 2)) >> Assigned(x, (2, 1)) & Assigned('blank', (2, 2)) & ~(Assigned('blank', (2, 1))) & ~(Assigned(x, (2, 2))))
-        
+
 
     return E
 
