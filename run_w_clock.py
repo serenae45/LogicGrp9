@@ -132,7 +132,7 @@ class Swap_pos5pos6(Hashable):
         self.pos6 = pos6
 
     def __repr__(self) -> str:
-        return f"({self.pos5} swapped with {self.pos5})"
+        return f"({self.pos5} swapped with {self.pos6})"
 
 @proposition(E)
 class Swap_pos5pos8(Hashable):
@@ -195,10 +195,8 @@ class swapped(Hashable):
 
 # assign propositions to variables 
 
-assigned_props = [
-    Assigned(tile, pos)
-    for tile, pos in zip(TILES, BOARD)
-]
+assigned_props = [Assigned(tile, pos) for tile, pos in zip(TILES, BOARD)]
+
 
 
 # instantiate objects for other swap propositions
@@ -219,29 +217,6 @@ Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
 
     
 
-# Add these instantiated to constraints
-
-# correct_props = []
-# for t in TILES:
-#     correct_props.append(Correct(t))
-
-# blank_props = []
-# for pos in BOARD:
-#     blank_props.append(Blank(pos))
-
-# can_swap_props = []
-# for pos in BOARD:
-#     for d in DIRECTIONS:
-#         can_swap_props.append(CanSwap(pos, d))
-
-# on_board_props = [] 
-# for pos in BOARD:
-#     on_board_props.append(on_board(pos))
-
-# above_props = []
-# for pos in BOARD:
-#     above_props.append(Above(pos))
-
 #w = goal_state()
 pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
 win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
@@ -256,17 +231,6 @@ Assigned(pb.pos7, (2, 0))
 Assigned(pb.pos8, (2, 1)) 
 Assigned(pb.pos9, (2, 2))
 
-# below_props = []
-# for pos in BOARD:
-#     below_props.append(Below(pos))
-
-# left_props = []
-# for pos in BOARD:
-#     left_props.append(Left(pos))
-
-# right_props = []
-# for pos in BOARD:
-#     right_props.append(Right(pos))
 
 
 Swap_pos1pos2_obj = Swap_pos1pos2(pos1=(0, 0), pos2=(0, 1))
@@ -344,6 +308,7 @@ def build_theory():
             else:
                 print("Error in setting up the board")
 
+
     # # The initial tile has to be a blank in order to swap with a target tile
     # for pos in BOARD:
     #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
@@ -384,31 +349,6 @@ def build_theory():
 
     #This swaps the tiles
     for x in TILES:
-        # E.add_constraint((Swap_tiles((0,0), (0,1)) & Assigned(x, (0, 0)) & Assigned('blank', (0, 1))) >> (Assigned('blank', (0, 0)) & Assigned(x, (0, 1) & ~Swap_tiles((0,0), (0,1))))) #negated swap so it does not keep swapping infinitely
-        # E.add_constraint((Swap_tiles((0,0), (1,0)) & Assigned(x, (0, 0)) & Assigned('blank', (1, 0))) >> (Assigned('blank', (0, 0)) & Assigned(x, (1, 0) & ~Swap_tiles((0,0), (1,0)))))
-        # E.add_constraint((Swap_tiles((0,1), (0,2)) & Assigned(x, (0, 1)) & Assigned('blank', (0, 2))) >> (Assigned('blank', (0, 1)) & Assigned(x, (0, 2) & ~Swap_tiles((0,1), (0,2)))))
-        # E.add_constraint((Swap_tiles((0,1), (1,1)) & Assigned(x, (0, 1)) & Assigned('blank', (1, 1))) >> (Assigned('blank', (0, 1)) & Assigned(x, (1, 1) & ~Swap_tiles((0,1), (1,1)))))
-        # E.add_constraint((Swap_tiles((0,2), (1,2)) & Assigned(x, (0, 2)) & Assigned('blank', (1, 2))) >> (Assigned('blank', (0, 2)) & Assigned(x, (1, 2) & ~Swap_tiles((0,2), (1,2)))))
-        # E.add_constraint((Swap_tiles((1,0), (1,1)) & Assigned(x, (1, 0)) & Assigned('blank', (1, 1))) >> (Assigned('blank', (1, 0)) & Assigned(x, (1, 1) & ~Swap_tiles((1,0), (1,1)))))
-        # E.add_constraint((Swap_tiles((1,0), (2,0)) & Assigned(x, (1, 0)) & Assigned('blank', (2, 0))) >> (Assigned('blank', (1, 0)) & Assigned(x, (2, 0) & ~Swap_tiles((1,0), (2,0)))))
-        # E.add_constraint((Swap_tiles((1,1), (1,2)) & Assigned(x, (1, 1)) & Assigned('blank', (1, 2))) >> (Assigned('blank', (1, 1)) & Assigned(x, (1, 2) & ~Swap_tiles((1,1), (1,2)))))
-        # E.add_constraint((Swap_tiles((1,1), (2,1)) & Assigned(x, (1, 1)) & Assigned('blank', (2, 1))) >> (Assigned('blank', (1, 1)) & Assigned(x, (2, 1) & ~Swap_tiles((1,1), (2,1)))))
-        # E.add_constraint((Swap_tiles((1,2), (2,2)) & Assigned(x, (1, 2)) & Assigned('blank', (2, 2))) >> (Assigned('blank', (1, 2)) & Assigned(x, (2, 2) & ~Swap_tiles((1,2), (2,2)))))
-        # E.add_constraint((Swap_tiles((2,0), (2,1)) & Assigned(x, (2, 1)) & Assigned('blank', (2, 1))) >> (Assigned('blank', (2, 0)) & Assigned(x, (2, 1) & ~Swap_tiles((2,0), (2,1)))))
-        # E.add_constraint((Swap_tiles((2,1), (2,2)) & Assigned(x, (2, 1)) & Assigned('blank', (2, 2))) >> (Assigned('blank', (2, 1)) & Assigned(x, (2, 2) & ~Swap_tiles((2,1), (2,2)))))
-        
-        # E.add_constraint((Swap_tiles((0,0), (0,1)) & Assigned('blank', (0, 0)) & Assigned(x, (0, 1))) >> (Assigned(x, (0, 0)) & Assigned('blank', (0, 1)) & ~Swap_tiles((0,0), (0,1))))
-        # E.add_constraint((Swap_tiles((0,0), (1,0)) & Assigned('blank', (0, 0)) & Assigned(x, (1, 0))) >> (Assigned(x, (0, 0)) & Assigned('blank', (1, 0)) & ~Swap_tiles((0,0), (1,0))))
-        # E.add_constraint((Swap_tiles((0,1), (0,2)) & Assigned('blank', (0, 1)) & Assigned(x, (0, 2))) >> (Assigned(x, (0, 1)) & Assigned('blank', (0, 2)) & ~Swap_tiles((0,1), (0,2))))
-        # E.add_constraint((Swap_tiles((0,1), (1,1)) & Assigned('blank', (0, 1)) & Assigned(x, (1, 1))) >> (Assigned(x, (0, 1)) & Assigned('blank', (1, 1)) & ~Swap_tiles((0,1), (1,1))))
-        # E.add_constraint((Swap_tiles((0,2), (1,2)) & Assigned('blank', (0, 2)) & Assigned(x, (1, 2))) >> (Assigned(x, (0, 2)) & Assigned('blank', (1, 2)) & ~Swap_tiles((0,2), (1,2))))
-        # E.add_constraint((Swap_tiles((1,0), (1,1)) & Assigned('blank', (1, 0)) & Assigned(x, (1, 1))) >> (Assigned(x, (1, 0)) & Assigned('blank', (1, 1)) & ~Swap_tiles((1,0), (1,1))))
-        # E.add_constraint((Swap_tiles((1,0), (2,0)) & Assigned('blank', (1, 0)) & Assigned(x, (2, 0))) >> (Assigned(x, (1, 0)) & Assigned('blank', (2, 0)) & ~Swap_tiles((1,0), (2,0))))
-        # E.add_constraint((Swap_tiles((1,1), (1,2)) & Assigned('blank', (1, 1)) & Assigned(x, (1, 2))) >> (Assigned(x, (1, 1)) & Assigned('blank', (1, 2)) & ~Swap_tiles((1,1), (1,2))))
-        # E.add_constraint((Swap_tiles((1,1), (2,1)) & Assigned('blank', (1, 1)) & Assigned(x, (2, 1))) >> (Assigned(x, (1, 1)) & Assigned('blank', (2, 1)) & ~Swap_tiles((1,1), (2,1))))
-        # E.add_constraint((Swap_tiles((1,2), (2,2)) & Assigned('blank', (1, 2)) & Assigned(x, (2, 2))) >> (Assigned(x, (1, 2)) & Assigned('blank', (2, 2)) & ~Swap_tiles((1,2), (2,2))))
-        # E.add_constraint((Swap_tiles((2,0), (2,1)) & Assigned('blank', (2, 0)) & Assigned(x, (2, 1))) >> (Assigned(x, (2, 0)) & Assigned('blank', (2, 1)) & ~Swap_tiles((2,0), (2,1))))
-        # E.add_constraint((Swap_tiles((2,1), (2,2)) & Assigned('blank', (2, 1)) & Assigned(x, (2, 2))) >> (Assigned(x, (2, 1)) & Assigned('blank', (2, 2)) & ~Swap_tiles((2,1), (2,2))))
         
         swap1 = [Swap_pos1pos2_obj, Assigned(x, (0, 0)), Assigned('blank', (0, 1)), clock(swaptimer, min_swaps)]
         swap2 = [Assigned('blank', (0, 0)), Assigned(x, (0, 1)) , ~(Assigned(x, (0, 0))), ~(Assigned('blank', (0, 1))), swapped((0, 0), (0, 1), swaptimer)]
@@ -423,7 +363,7 @@ def build_theory():
         swap8 = [Assigned('blank', (0, 1)) , Assigned(x, (1, 1)) , ~(Assigned(x, (0, 1))) , ~(Assigned('blank', (1, 1))), swapped((0, 1), (1, 1), swaptimer)]
 
         swap9 = [Swap_pos3pos6_obj , Assigned(x, (0, 2)) , Assigned('blank', (1, 2)), clock(swaptimer, min_swaps)]
-        swap10= [Assigned('blank', (0, 2)) , Assigned(x, (1, 2)) , ~(Assigned(x, (0, 2))) , ~(Assigned('blank', (1, 2))), swapped((0, 2), (1, 2), swaptimer)]
+        swap10 = [Assigned('blank', (0, 2)) , Assigned(x, (1, 2)) , ~(Assigned(x, (0, 2))) , ~(Assigned('blank', (1, 2))), swapped((0, 2), (1, 2), swaptimer)]
 
         swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0)) , Assigned('blank', (1, 1)), clock(swaptimer, min_swaps)]
         swap12 = [ Assigned('blank', (1, 0)) , Assigned(x, (1, 1)) , ~(Assigned(x, (1, 0))) , ~(Assigned('blank', (1, 1))), swapped((1, 0), (1, 1), swaptimer)]
@@ -432,18 +372,18 @@ def build_theory():
         swap14 = [Assigned('blank', (1, 0)) , Assigned(x, (2, 0)) , ~(Assigned(x, (1, 0))) , ~(Assigned('blank', (2, 0))), swapped((1, 0), (2, 0), swaptimer)]
 
         swap15 = [Swap_pos5pos6_obj , Assigned(x, (1, 1)) , Assigned('blank', (1, 2)), clock(swaptimer, min_swaps)]
-        swap16 =[Assigned('blank', (1, 1)) , Assigned(x, (1, 2)) , ~(Assigned(x, (1, 1))) , ~(Assigned('blank', (1, 2))), swapped((1, 1), (1, 2), swaptimer)]
+        swap16 = [Assigned('blank', (1, 1)) , Assigned(x, (1, 2)) , ~(Assigned(x, (1, 1))) , ~(Assigned('blank', (1, 2))), swapped((1, 1), (1, 2), swaptimer)]
 
-        swap17= [Swap_pos5pos8_obj , Assigned(x, (1, 1)) , Assigned('blank', (2, 1)), clock(swaptimer, min_swaps)]
+        swap17 = [Swap_pos5pos8_obj , Assigned(x, (1, 1)) , Assigned('blank', (2, 1)), clock(swaptimer, min_swaps)]
         swap18 = [Assigned('blank', (1, 1)) , Assigned(x, (2, 1)) , ~(Assigned(x, (1, 1))) , ~(Assigned('blank', (2, 1))), swapped((2, 1), (1, 1), swaptimer)]
 
-        swap19= [Swap_pos6pos9_obj , Assigned(x, (1, 2)) , Assigned('blank', (2, 2)), clock(swaptimer, min_swaps)]
+        swap19 = [Swap_pos6pos9_obj , Assigned(x, (1, 2)) , Assigned('blank', (2, 2)), clock(swaptimer, min_swaps)]
         swap20 = [Assigned('blank', (1, 2)) , Assigned(x, (2, 2)) , ~(Assigned(x, (1, 2))) , ~(Assigned('blank', (2, 2))), swapped((1, 2), (2, 2), swaptimer)]
 
         swap21 = [Swap_pos7pos8_obj , Assigned(x, (2, 0)) , Assigned('blank', (2, 1)), clock(swaptimer, min_swaps)]
         swap22 = [Assigned('blank', (2, 0)), Assigned(x, (2, 1)), ~(Assigned(x, (2, 0))), ~(Assigned('blank', (2, 1))), swapped((2, 0), (2, 1), swaptimer)]
 
-        swap23= [Swap_pos8pos9_obj , Assigned(x, (2, 1)) , Assigned('blank', (2, 2)), clock(swaptimer, min_swaps)]
+        swap23 = [Swap_pos8pos9_obj , Assigned(x, (2, 1)) , Assigned('blank', (2, 2)), clock(swaptimer, min_swaps)]
         swap24 = [Assigned('blank', (2, 1)) , Assigned(x, (2, 2)) , ~(Assigned(x, (2, 1))) , ~(Assigned('blank', (2, 2))), swapped((2, 1), (2, 2), swaptimer)]
         
 
@@ -456,9 +396,9 @@ def build_theory():
         # incrementing swaptimer when a swap between two tiles occur
         for pos1 in BOARD:
             for pos2 in BOARD:
-                if pos1 != pos2:
-                    if swapped(pos1, pos2, swaptimer):
-                        swaptimer += 1
+                if pos1 != pos2 and swapped(pos1, pos2, swaptimer):
+                    swaptimer += 1
+
 
 
         E.add_constraint(And(swap1) >> And(swap2))
@@ -488,7 +428,7 @@ def build_theory():
         E.add_constraint(And(swap24) >> And(swap23))
     
 
-        return E
+    return E
 
 
         #E.add_constraint(Swap_pos1pos2_obj & Assigned(x, (0, 0)) & Assigned('blank', (0, 1)) >> Assigned('blank', (0, 0)) & Assigned(x, (0, 1)) & ~(Assigned(x, (0, 0))) & ~(Assigned('blank', (0, 1))))
