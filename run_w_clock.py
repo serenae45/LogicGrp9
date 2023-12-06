@@ -249,10 +249,10 @@ def time_updater(pos1, pos2, swaptimer, E):
     for pos in BOARD:
         if pos1 != pos and pos2 != pos:
             for tile in TILES:
-                if(Assigned(tile, pos, swaptimer-1)):
-                    E.add_constraint(Assigned(tile, pos, swaptimer))
+                if(Assigned(tile, pos, swaptimer)):
+                    E.add_constraint(Assigned(tile, pos, swaptimer+1))
                 else:
-                    E.add_constraint(~Assigned(tile, pos, swaptimer))
+                    E.add_constraint(~Assigned(tile, pos, swaptimer+1))
     return E
 
 
