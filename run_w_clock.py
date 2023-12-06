@@ -329,6 +329,11 @@ def build_theory(swaptimer):
                          Assigned('blank', (2, 2), min_swaps), ~clock(swaptimer, min_swaps)) >> win)
     
 
+
+    #Has to go both ways,  a win implies tiles are in correct position
+    E.add_constraint(win >> And(Assigned('1', (0, 0), min_swaps), Assigned('2', (0, 1), min_swaps), Assigned('3', (0, 2), min_swaps) , Assigned('4', (1, 0), min_swaps), 
+                        Assigned('5', (1, 1), min_swaps), Assigned('6', (1, 2), min_swaps), Assigned('7', (2, 0), min_swaps), Assigned('8', (2, 1), min_swaps), 
+                        Assigned('blank', (2, 2), min_swaps), ~clock(swaptimer, min_swaps)))
     
     # makes sure only one tile is always assigned to one position.
     # for t1 in TILES:
