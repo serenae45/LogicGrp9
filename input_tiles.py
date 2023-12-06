@@ -4,4 +4,4 @@ TILES = [
     '7', '5', '8'
 ]
 
-min_swaps = 2
+max_swaps = 2
