@@ -51,7 +51,6 @@ class Assigned(Hashable): # checks if number is assigned to a position
 
     def __str__(self) -> str:
         return f"({self.tile} @ {self.pos} at time {self.timer})"
-    
 
 @proposition(E)
 class clock(Hashable):
@@ -187,11 +186,10 @@ class Swap_pos8pos9(Hashable):
     
 @proposition(E)
 class swapped(Hashable):
-    def __init__(self, pos1, pos2, swaptimer, time_updater) -> None:
+    def __init__(self, pos1, pos2, swaptimer) -> None:
         self.pos1 = pos1
         self.pos2 = pos2
         self.swaptimer = swaptimer
-        self.time_updater = time_updater
 
     def __str__(self) -> str:
         return f"(The tiles at positions {self.pos1} and {self.pos2} swapped at time {self.swaptimer})"
@@ -232,7 +230,7 @@ Swap_pos8pos9_obj = Swap_pos8pos9(pos8=(2, 1), pos9=(2, 2))
     
 
 #w = goal_state()
-pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
+# pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
 win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 
 # Assigned(pb.pos1, (0, 0))
@@ -245,25 +243,9 @@ win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 # Assigned(pb.pos8, (2, 1))
 # Assigned(pb.pos9, (2, 2))
 
-def time_updater(pos1, pos2, swaptimer, E):
-    for pos in BOARD:
-        if pos1 != pos and pos2 != pos:
-            for tile in TILES:
-                if(Assigned(tile, pos, swaptimer-1)):
-                    E.add_constraint(Assigned(tile, pos, swaptimer))
-                else:
-                    E.add_constraint(~Assigned(tile, pos, swaptimer))
-    return E
 
 
-
-def timer_add(time):
-    ''' incrementing swaptimer when a swap between two tiles occur
-    '''
-    new_time = time + 1
-    return new_time
-
-
+                    
 
 def build_theory(swaptimer):
     # Encoding that will store all of your constraints
@@ -376,7 +358,7 @@ def build_theory(swaptimer):
         swap10 = [Assigned('blank', (0, 2), swaptimer) , Assigned(x, (1, 2), swaptimer), swapped((0, 2), (1, 2), swaptimer)]
 
         swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0), swaptimer) , Assigned('blank', (1, 1), swaptimer), clock(swaptimer, min_swaps)]
-        swap12 = [Assigned('blank', (1, 0), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((1, 0), (1, 1), swaptimer)]
+        swap12 = [ Assigned('blank', (1, 0), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((1, 0), (1, 1), swaptimer)]
 
         swap13 = [Swap_pos4pos7_obj , Assigned(x, (1, 0), swaptimer) , Assigned('blank', (2, 0), swaptimer), clock(swaptimer, min_swaps)]
         swap14 = [Assigned('blank', (1, 0), swaptimer) , Assigned(x, (2, 0), swaptimer), swapped((1, 0), (2, 0), swaptimer)]
@@ -390,11 +372,11 @@ def build_theory(swaptimer):
         swap19 = [Swap_pos6pos9_obj , Assigned(x, (1, 2), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, min_swaps)]
         swap20 = [Assigned('blank', (1, 2), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((1, 2), (2, 2), swaptimer)]
 
-        swap21 = [Swap_pos7pos8_obj, Assigned(x, (2, 0), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, min_swaps)]
+        swap21 = [Swap_pos7pos8_obj , Assigned(x, (2, 0), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, min_swaps)]
         swap22 = [Assigned('blank', (2, 0), swaptimer), Assigned(x, (2, 1), swaptimer), swapped((2, 0), (2, 1), swaptimer)]
 
         swap23 = [Swap_pos8pos9_obj , Assigned(x, (2, 1), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, min_swaps)]
-        swap24 = [Assigned('blank', (2, 1), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((2, 1), (2, 2), timer_add(swaptimer), time_updater((2, 1), (2, 2), swaptimer, E))]
+        swap24 = [Assigned('blank', (2, 1), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((2, 1), (2, 2), swaptimer)]
         
 
         # if the swaptimer reaches the number of minimum swaps for the board, clock is no longer true.
@@ -402,6 +384,13 @@ def build_theory(swaptimer):
             E.add_constraint(~clock(swaptimer, min_swaps))
         else: 
             E.add_constraint(clock(swaptimer, min_swaps))
+
+        # incrementing swaptimer when a swap between two tiles occur
+        for pos1 in BOARD:
+            for pos2 in BOARD:
+                if pos1 != pos2:
+                    if swapped(pos1, pos2, swaptimer):
+                        swaptimer += 1
 
 
 
