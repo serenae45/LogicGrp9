@@ -299,7 +299,7 @@ def build_theory(swaptimer):
                 E.add_constraint(Assigned('6', (i, j), 0))
                 for tile in TILES:
                     if tile != '6':
-                        E.add_constraint(~Assigned(tile, (i, j, 0)))
+                        E.add_constraint(~Assigned(tile, (i, j), 0))
             elif(board[i][j] == '7'):
                 E.add_constraint(Assigned('7', (i, j), 0))
                 for tile in TILES:
@@ -319,33 +319,14 @@ def build_theory(swaptimer):
                 print("Error in setting up the board")
 
 
-    # # The initial tile has to be a blank in order to swap with a target tile
-    # for pos in BOARD:
-    #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> Blank(pos))
 
-    # # A tile can only swap with a position above, below, or beside it that is on the board
-    # for pos in BOARD:
-    #     E.add_constraint(CanSwap(pos, d) for d in DIRECTIONS >> (Above(pos) | Below(pos) | Left(pos) | Right(pos)))
-    
-
-    # # Check if the tile above, below, left, or right is a valid position 
-    # board_len = len(BOARD)
-    # for i in range(board_len):
-    #     if i > 3:
-    #         E.add_constraint(on_board(BOARD[i-3]) >> Above(BOARD[i]))
-    #     if i < 6:
-    #         E.add_constraint(on_board(BOARD[i+3]) >> Below(BOARD[i]))
-    #     if i == 1 or i == 2 or i == 4 or i == 5 or i == 7 or i == 8:
-    #         E.add_constraint(on_board(BOARD[i-1]) >> Left(BOARD[i]))
-    #     if i == 0 or i == 1 or i == 3 or i == 4 or i == 6 or i == 7:
-    #         E.add_constraint(on_board(BOARD[i+1] >> Right(BOARD[i])))
 
     # The swaptimer keeps track of the number of swaps that occur
     
     # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
     E.add_constraint(And(Assigned('1', (0, 0), min_swaps), Assigned('2', (0, 1), min_swaps), Assigned('3', (0, 2), min_swaps) , Assigned('4', (1, 0), min_swaps), 
                          Assigned('5', (1, 1), min_swaps), Assigned('6', (1, 2), min_swaps), Assigned('7', (2, 0), min_swaps), Assigned('8', (2, 1), min_swaps), 
-                         Assigned('blank', (2, 2), min_swaps), ~clock(swaptimer, min_swaps) >> win))
+                         Assigned('blank', (2, 2), min_swaps), ~clock(swaptimer, min_swaps)) >> win)
     
 
     
@@ -405,31 +386,31 @@ def build_theory(swaptimer):
 
 
 
-        E.add_constraint(And(swap1) >> And(swap2))
-        E.add_constraint(And(swap3) >> And(swap4))
-        E.add_constraint(And(swap5) >> And(swap6))
-        E.add_constraint(And(swap7) >> And(swap8))
-        E.add_constraint(And(swap9) >> And(swap10))
-        E.add_constraint(And(swap11) >> And(swap12))
-        E.add_constraint(And(swap13) >> And(swap14))
-        E.add_constraint(And(swap15) >> And(swap16))
-        E.add_constraint(And(swap17) >> And(swap18))
-        E.add_constraint(And(swap19) >> And(swap20))
-        E.add_constraint(And(swap21) >> And(swap22))
-        E.add_constraint(And(swap23) >> And(swap24))
+    E.add_constraint(And(swap1) >> And(swap2))
+    E.add_constraint(And(swap3) >> And(swap4))
+    E.add_constraint(And(swap5) >> And(swap6))
+    E.add_constraint(And(swap7) >> And(swap8))
+    E.add_constraint(And(swap9) >> And(swap10))
+    E.add_constraint(And(swap11) >> And(swap12))
+    E.add_constraint(And(swap13) >> And(swap14))
+    E.add_constraint(And(swap15) >> And(swap16))
+    E.add_constraint(And(swap17) >> And(swap18))
+    E.add_constraint(And(swap19) >> And(swap20))
+    E.add_constraint(And(swap21) >> And(swap22))
+    E.add_constraint(And(swap23) >> And(swap24))
 
-        E.add_constraint(And(swap2) >> And(swap1))
-        E.add_constraint(And(swap4) >> And(swap3))
-        E.add_constraint(And(swap6) >> And(swap5))
-        E.add_constraint(And(swap8) >> And(swap7))
-        E.add_constraint(And(swap10) >> And(swap9))
-        E.add_constraint(And(swap12) >> And(swap11))
-        E.add_constraint(And(swap14) >> And(swap13))
-        E.add_constraint(And(swap16) >> And(swap15))
-        E.add_constraint(And(swap18) >> And(swap17))
-        E.add_constraint(And(swap20) >> And(swap19))
-        E.add_constraint(And(swap22) >> And(swap21))
-        E.add_constraint(And(swap24) >> And(swap23))
+    E.add_constraint(And(swap2) >> And(swap1))
+    E.add_constraint(And(swap4) >> And(swap3))
+    E.add_constraint(And(swap6) >> And(swap5))
+    E.add_constraint(And(swap8) >> And(swap7))
+    E.add_constraint(And(swap10) >> And(swap9))
+    E.add_constraint(And(swap12) >> And(swap11))
+    E.add_constraint(And(swap14) >> And(swap13))
+    E.add_constraint(And(swap16) >> And(swap15))
+    E.add_constraint(And(swap18) >> And(swap17))
+    E.add_constraint(And(swap20) >> And(swap19))
+    E.add_constraint(And(swap22) >> And(swap21))
+    E.add_constraint(And(swap24) >> And(swap23))
     
 
     
