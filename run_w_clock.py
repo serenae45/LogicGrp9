@@ -361,37 +361,37 @@ def build_theory(swaptimer):
     for x in TILES:
         
         swap1 = [Swap_pos1pos2_obj, Assigned(x, (0, 0), swaptimer), Assigned('blank', (0, 1), swaptimer), clock(swaptimer, min_swaps)]
-        swap2 = [Assigned('blank', (0, 0), swaptimer), Assigned(x, (0, 1), swaptimer), swapped((0, 0), (0, 1), swaptimer)]
+        swap2 = [Assigned('blank', (0, 0), swaptimer), Assigned(x, (0, 1), swaptimer), swapped((0, 0), (0, 1), timer_add(swaptimer), time_updater((0, 0), (0, 1), swaptimer, E))]
 
         swap3 = [Swap_pos1pos4_obj, Assigned(x, (0, 0), swaptimer), Assigned('blank', (1, 0), swaptimer), clock(swaptimer, min_swaps)]
-        swap4 = [Assigned('blank', (0, 0), swaptimer) , Assigned(x, (1, 0), swaptimer), swapped((0, 0), (1, 0), swaptimer)]
+        swap4 = [Assigned('blank', (0, 0), swaptimer) , Assigned(x, (1, 0), swaptimer), swapped((0, 0), (1, 0), timer_add(swaptimer), time_updater((0, 0), (1, 0), swaptimer, E))]
 
         swap5 = [Swap_pos2pos3_obj, Assigned(x, (0, 1), swaptimer) , Assigned('blank', (0, 2), swaptimer), clock(swaptimer, min_swaps)]
-        swap6 = [Assigned('blank', (0, 1), swaptimer) , Assigned(x, (0, 2), swaptimer), swapped((0, 1), (0, 2), swaptimer)]
+        swap6 = [Assigned('blank', (0, 1), swaptimer) , Assigned(x, (0, 2), swaptimer), swapped((0, 1), (0, 2), timer_add(swaptimer), time_updater((0, 1), (0, 2), swaptimer, E))]
 
         swap7 = [Swap_pos2pos5_obj , Assigned(x, (0, 1), swaptimer) , Assigned('blank', (1, 1), swaptimer), clock(swaptimer, min_swaps)]
-        swap8 = [Assigned('blank', (0, 1), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((0, 1), (1, 1), swaptimer)]
+        swap8 = [Assigned('blank', (0, 1), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((0, 1), (1, 1), timer_add(swaptimer), time_updater((0, 1), (1, 1), swaptimer, E))]
 
         swap9 = [Swap_pos3pos6_obj , Assigned(x, (0, 2), swaptimer) , Assigned('blank', (1, 2), swaptimer), clock(swaptimer, min_swaps)]
-        swap10 = [Assigned('blank', (0, 2), swaptimer) , Assigned(x, (1, 2), swaptimer), swapped((0, 2), (1, 2), swaptimer)]
+        swap10 = [Assigned('blank', (0, 2), swaptimer) , Assigned(x, (1, 2), swaptimer), swapped((0, 2), (1, 2), timer_add(swaptimer), time_updater((0, 2), (1, 2), swaptimer, E))]
 
         swap11 = [Swap_pos4pos5_obj , Assigned(x, (1, 0), swaptimer) , Assigned('blank', (1, 1), swaptimer), clock(swaptimer, min_swaps)]
-        swap12 = [Assigned('blank', (1, 0), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((1, 0), (1, 1), swaptimer)]
+        swap12 = [Assigned('blank', (1, 0), swaptimer) , Assigned(x, (1, 1), swaptimer), swapped((1, 0), (1, 1), timer_add(swaptimer), time_updater((1, 0), (1, 1), swaptimer, E))]
 
         swap13 = [Swap_pos4pos7_obj , Assigned(x, (1, 0), swaptimer) , Assigned('blank', (2, 0), swaptimer), clock(swaptimer, min_swaps)]
-        swap14 = [Assigned('blank', (1, 0), swaptimer) , Assigned(x, (2, 0), swaptimer), swapped((1, 0), (2, 0), swaptimer)]
+        swap14 = [Assigned('blank', (1, 0), swaptimer) , Assigned(x, (2, 0), swaptimer), swapped((1, 0), (2, 0), timer_add(swaptimer), time_updater((1, 0), (2, 0),swaptimer, E))]
 
         swap15 = [Swap_pos5pos6_obj , Assigned(x, (1, 1), swaptimer) , Assigned('blank', (1, 2), swaptimer), clock(swaptimer, min_swaps)]
-        swap16 = [Assigned('blank', (1, 1), swaptimer) , Assigned(x, (1, 2), swaptimer), swapped((1, 1), (1, 2), swaptimer)]
+        swap16 = [Assigned('blank', (1, 1), swaptimer) , Assigned(x, (1, 2), swaptimer), swapped((1, 1), (1, 2), timer_add(swaptimer), time_updater((2, 1), (2, 2), swaptimer, E))]
 
         swap17 = [Swap_pos5pos8_obj , Assigned(x, (1, 1), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, min_swaps)]
-        swap18 = [Assigned('blank', (1, 1), swaptimer) , Assigned(x, (2, 1), swaptimer), swapped((2, 1), (1, 1), swaptimer)]
+        swap18 = [Assigned('blank', (1, 1), swaptimer) , Assigned(x, (2, 1), swaptimer), swapped((2, 1), (1, 1), timer_add(swaptimer), time_updater((2, 1), (1, 1), swaptimer, E))]
 
         swap19 = [Swap_pos6pos9_obj , Assigned(x, (1, 2), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, min_swaps)]
-        swap20 = [Assigned('blank', (1, 2), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((1, 2), (2, 2), swaptimer)]
+        swap20 = [Assigned('blank', (1, 2), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((1, 2), (2, 2), timer_add(swaptimer), time_updater((1, 2), (2, 2), swaptimer, E))]
 
         swap21 = [Swap_pos7pos8_obj, Assigned(x, (2, 0), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, min_swaps)]
-        swap22 = [Assigned('blank', (2, 0), swaptimer), Assigned(x, (2, 1), swaptimer), swapped((2, 0), (2, 1), swaptimer)]
+        swap22 = [Assigned('blank', (2, 0), swaptimer), Assigned(x, (2, 1), swaptimer), swapped((2, 0), (2, 1), timer_add(swaptimer), time_updater((2, 0), (2, 1), swaptimer, E))]
 
         swap23 = [Swap_pos8pos9_obj , Assigned(x, (2, 1), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, min_swaps)]
         swap24 = [Assigned('blank', (2, 1), swaptimer) , Assigned(x, (2, 2), swaptimer), swapped((2, 1), (2, 2), timer_add(swaptimer), time_updater((2, 1), (2, 2), swaptimer, E))]
