@@ -26,21 +26,22 @@ class Hashable:
 
 
 # slide puzzle propositions 
-@proposition(E)
-class Puzzle_Board(Hashable):
-    def __init__(self, tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8, tile9) -> None:
-        self.pos1 = tile1
-        self.pos2 = tile2
-        self.pos3 = tile3
-        self.pos4 = tile4
-        self.pos5 = tile5
-        self.pos6 = tile6
-        self.pos7 = tile7
-        self.pos8 = tile8
-        self.pos9 = tile9
 
-    def __str__(self) -> str:
-        return f"([[{self.pos1},{self.pos2},{self.pos3}],[{self.pos4},{self.pos5},{self.pos6}],[{self.pos7},{self.pos8},{self.pos9}]])"
+# @proposition(E)
+# class Puzzle_Board(Hashable):
+#     def __init__(self, tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8, tile9) -> None:
+#         self.pos1 = tile1
+#         self.pos2 = tile2
+#         self.pos3 = tile3
+#         self.pos4 = tile4
+#         self.pos5 = tile5
+#         self.pos6 = tile6
+#         self.pos7 = tile7
+#         self.pos8 = tile8
+#         self.pos9 = tile9
+
+#     def __str__(self) -> str:
+#         return f"([[{self.pos1},{self.pos2},{self.pos3}],[{self.pos4},{self.pos5},{self.pos6}],[{self.pos7},{self.pos8},{self.pos9}]])"
 
 @proposition(E)
 class Assigned(Hashable): # checks if number is assigned to a position 
@@ -62,117 +63,13 @@ class clock(Hashable):
     def __str__(self) -> str:
         return f"(The board is at time {self.swaptimer}.)"
     
-@proposition(E)
-class Swap_pos1pos2(Hashable):
-    def __init__(self, pos1, pos2) -> None:
-        self.pos1 = pos1
-        self.pos2 = pos2
-
-    def __repr__(self) -> str:
-        return f"()" 
-  
-
 
 @proposition(E)
-class Swap_pos1pos4(Hashable):
-    def __init__(self, pos1, pos4) -> None:
-        self.pos1 = pos1
-        self.pos4 = pos4
-
-    def __repr__(self) -> str:
-        return f"()"
-
-@proposition(E)
-class Swap_pos2pos3(Hashable):
-    def __init__(self, pos2, pos3) -> None:
-        self.pos2 = pos2
-        self.pos3 = pos3
-
-    def __repr__(self) -> str:
-        return f"()"
-
-@proposition(E)
-class Swap_pos2pos5(Hashable):
-    def __init__(self, pos2, pos5) -> None:
-        self.pos2 = pos2
-        self.pos5 = pos5
-
-    def __repr__(self) -> str:
-        return f"()"
-
-@proposition(E)
-class Swap_pos3pos6(Hashable):
-    def __init__(self, pos3, pos6) -> None:
-        self.pos3 = pos3
-        self.pos6 = pos6
-
-    def __repr__(self) -> str:
-        return f"()"
-
-@proposition(E)
-class Swap_pos4pos5(Hashable):
-    def __init__(self, pos4, pos5) -> None:
-        self.pos4 = pos4
-        self.pos5 = pos5
-
-    def __repr__(self) -> str:
-        return f"()"
-    
-@proposition(E)
-class Swap_pos4pos7(Hashable):
-    def __init__(self, pos4, pos7) -> None:
-        self.pos4 = pos4
-        self.pos7 = pos7
-
-    def __repr__(self) -> str:
-        return f"()"
-    
-@proposition(E)
-class Swap_pos5pos6(Hashable):
-    def __init__(self, pos5, pos6) -> None:
-        self.pos5 = pos5
-        self.pos6 = pos6
-
-    def __repr__(self) -> str:
-        return f"()"
-
-@proposition(E)
-class Swap_pos5pos8(Hashable):
-    def __init__(self, pos5, pos8) -> None:
-        self.pos5 = pos5
-        self.pos8 = pos8
-
-    def __repr__(self) -> str:
-        return f"()"
-    
-@proposition(E)
-class Swap_pos6pos9(Hashable):
-    def __init__(self, pos6, pos9) -> None:
-        self.pos6 = pos6
-        self.pos9 = pos9
-
-    def __repr__(self) -> str:
-        return f"()"
-
-    
-@proposition(E)
-class Swap_pos7pos8(Hashable):
-    def __init__(self, pos7, pos8) -> None:
-        self.pos7 = pos7
-        self.pos8 = pos8
-
-    def __repr__(self) -> str:
-        return f"()"
-    
-@proposition(E)
-class Swap_pos8pos9(Hashable):
-    def __init__(self, pos8, pos9) -> None:
-        self.pos8 = pos8
-        self.pos9 = pos9
-
-    def __repr__(self):
-        return f"()"
-
+class goal_state(Hashable):
+    def __init__(self) -> None:
+        self.self = self
+    def __str__(self) -> str:
+       return f"(The board is in its goal state.)"
 
     
 @proposition(E)
@@ -200,10 +97,11 @@ def time_updater(pos1, pos2, swaptimer, E):
 def clock_updater(E, swaptimer):
 # if the swaptimer reaches the number of minimum swaps for the board, clock is no longer true.
     if swaptimer >= max_swaps:
-        E.add_constraint(~clock(swaptimer, max_swaps))
-    else: 
         E.add_constraint(clock(swaptimer, max_swaps))
+    else: 
+        E.add_constraint(~clock(swaptimer, max_swaps))
     return E
+
 
 # assign propositions to variables 
 assigned_props = []
@@ -240,9 +138,9 @@ for pos1 in BOARD:
 
     
 
-#w = goal_state()
-pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
-win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
+w = goal_state()
+#pb = Puzzle_Board(TILES[0], TILES[1], TILES[2], TILES[3], TILES[4], TILES[5], TILES[6], TILES[7], TILES[8])
+#win = Puzzle_Board('1', '2', '3', '4', '5', '6', '7', '8', 'blank')
 
 # Assigned(pb.pos1, (0, 0))
 # Assigned(pb.pos2, (0, 1))
@@ -325,16 +223,16 @@ def build_theory(swaptimer):
 
     # The swaptimer keeps track of the number of swaps that occur
     
-    for i in range(max_swaps + 1):
-        # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
-        E.add_constraint(And(Assigned('1', (0, 0), i), Assigned('2', (0, 1), i), Assigned('3', (0, 2), i) , Assigned('4', (1, 0), i), 
-                         Assigned('5', (1, 1), i), Assigned('6', (1, 2), i), Assigned('7', (2, 0), i), Assigned('8', (2, 1), i), 
-                         Assigned('blank', (2, 2), i), ~clock(swaptimer, max_swaps)) >> win)
     
-        #Has to go both ways,  a win implies tiles are in correct position
-        E.add_constraint(win >> And(Assigned('1', (0, 0), i), Assigned('2', (0, 1), i), Assigned('3', (0, 2), i) , Assigned('4', (1, 0), i), 
-                        Assigned('5', (1, 1), i), Assigned('6', (1, 2), i), Assigned('7', (2, 0), i), Assigned('8', (2, 1), i), 
-                        Assigned('blank', (2, 2), i), ~clock(swaptimer, max_swaps)))
+    # All tiles need to be in their correct positions to solve the puzzle and the clock needs to be at the correct time as stated in the input_tiles file.
+    E.add_constraint(And(Assigned('1', (0, 0), max_swaps), Assigned('2', (0, 1), max_swaps), Assigned('3', (0, 2), max_swaps) , Assigned('4', (1, 0), max_swaps), 
+                     Assigned('5', (1, 1), max_swaps), Assigned('6', (1, 2), max_swaps), Assigned('7', (2, 0), max_swaps), Assigned('8', (2, 1), max_swaps), 
+                     Assigned('blank', (2, 2), max_swaps), clock(swaptimer, max_swaps)) >> w)
+    
+    #Has to go both ways,  a win implies tiles are in correct position
+    E.add_constraint(w >> And(Assigned('1', (0, 0), max_swaps), Assigned('2', (0, 1), max_swaps), Assigned('3', (0, 2), max_swaps) , Assigned('4', (1, 0), max_swaps), 
+                    Assigned('5', (1, 1), max_swaps), Assigned('6', (1, 2), max_swaps), Assigned('7', (2, 0), max_swaps), Assigned('8', (2, 1), max_swaps), 
+                    Assigned('blank', (2, 2), max_swaps), clock(swaptimer, max_swaps)))
     
     # makes sure only one tile is always assigned to one position.
     # for t1 in TILES:
@@ -347,40 +245,40 @@ def build_theory(swaptimer):
     #This swaps the tiles
     for x in TILES:
         
-        swap1 = [Assigned(x, (0, 0), swaptimer), Assigned('blank', (0, 1), swaptimer), clock(swaptimer, max_swaps)]
+        swap1 = [Assigned(x, (0, 0), swaptimer), Assigned('blank', (0, 1), swaptimer), ~clock(swaptimer, max_swaps)]
         swap2 = [Assigned('blank', (0, 0), swaptimer+1), Assigned(x, (0, 1), swaptimer+1), swapped((0, 0), (0, 1), timer_add(swaptimer), time_updater((0, 0), (0, 1), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap3 = [Assigned(x, (0, 0), swaptimer), Assigned('blank', (1, 0), swaptimer), clock(swaptimer, max_swaps)]
+        swap3 = [Assigned(x, (0, 0), swaptimer), Assigned('blank', (1, 0), swaptimer), ~clock(swaptimer, max_swaps)]
         swap4 = [Assigned('blank', (0, 0), swaptimer+1) , Assigned(x, (1, 0), swaptimer+1), swapped((0, 0), (1, 0), timer_add(swaptimer), time_updater((0, 0), (1, 0), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap5 = [ Assigned(x, (0, 1), swaptimer) , Assigned('blank', (0, 2), swaptimer), clock(swaptimer, max_swaps)]
+        swap5 = [ Assigned(x, (0, 1), swaptimer) , Assigned('blank', (0, 2), swaptimer), ~clock(swaptimer, max_swaps)]
         swap6 = [Assigned('blank', (0, 1), swaptimer+1) , Assigned(x, (0, 2), swaptimer+1), swapped((0, 1), (0, 2), timer_add(swaptimer), time_updater((0, 1), (0, 2), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap7 = [Assigned(x, (0, 1), swaptimer) , Assigned('blank', (1, 1), swaptimer), clock(swaptimer, max_swaps)]
+        swap7 = [Assigned(x, (0, 1), swaptimer) , Assigned('blank', (1, 1), swaptimer), ~clock(swaptimer, max_swaps)]
         swap8 = [Assigned('blank', (0, 1), swaptimer+1) , Assigned(x, (1, 1), swaptimer+1), swapped((0, 1), (1, 1), timer_add(swaptimer), time_updater((0, 1), (1, 1), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap9 = [Assigned(x, (0, 2), swaptimer) , Assigned('blank', (1, 2), swaptimer), clock(swaptimer, max_swaps)]
+        swap9 = [Assigned(x, (0, 2), swaptimer) , Assigned('blank', (1, 2), swaptimer), ~clock(swaptimer, max_swaps)]
         swap10 = [Assigned('blank', (0, 2), swaptimer+1) , Assigned(x, (1, 2), swaptimer+1), swapped((0, 2), (1, 2), timer_add(swaptimer), time_updater((0, 2), (1, 2), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap11 = [Assigned(x, (1, 0), swaptimer) , Assigned('blank', (1, 1), swaptimer), clock(swaptimer, max_swaps)]
+        swap11 = [Assigned(x, (1, 0), swaptimer) , Assigned('blank', (1, 1), swaptimer), ~clock(swaptimer, max_swaps)]
         swap12 = [Assigned('blank', (1, 0), swaptimer+1) , Assigned(x, (1, 1), swaptimer+1), swapped((1, 0), (1, 1), timer_add(swaptimer), time_updater((1, 0), (1, 1), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap13 = [Assigned(x, (1, 0), swaptimer) , Assigned('blank', (2, 0), swaptimer), clock(swaptimer, max_swaps)]
+        swap13 = [Assigned(x, (1, 0), swaptimer) , Assigned('blank', (2, 0), swaptimer), ~clock(swaptimer, max_swaps)]
         swap14 = [Assigned('blank', (1, 0), swaptimer+1) , Assigned(x, (2, 0), swaptimer+1), swapped((1, 0), (2, 0), timer_add(swaptimer), time_updater((1, 0), (2, 0),swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap15 = [Assigned(x, (1, 1), swaptimer) , Assigned('blank', (1, 2), swaptimer), clock(swaptimer, max_swaps)]
+        swap15 = [Assigned(x, (1, 1), swaptimer) , Assigned('blank', (1, 2), swaptimer), ~clock(swaptimer, max_swaps)]
         swap16 = [Assigned('blank', (1, 1), swaptimer+1) , Assigned(x, (1, 2), swaptimer+1), swapped((1, 1), (1, 2), timer_add(swaptimer), time_updater((2, 1), (2, 2), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap17 = [Assigned(x, (1, 1), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, max_swaps)]
+        swap17 = [Assigned(x, (1, 1), swaptimer) , Assigned('blank', (2, 1), swaptimer), ~clock(swaptimer, max_swaps)]
         swap18 = [Assigned('blank', (1, 1), swaptimer+1) , Assigned(x, (2, 1), swaptimer+1), swapped((2, 1), (1, 1), timer_add(swaptimer), time_updater((2, 1), (1, 1), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap19 = [Assigned(x, (1, 2), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, max_swaps)]
+        swap19 = [Assigned(x, (1, 2), swaptimer) , Assigned('blank', (2, 2), swaptimer), ~clock(swaptimer, max_swaps)]
         swap20 = [Assigned('blank', (1, 2), swaptimer+1) , Assigned(x, (2, 2), swaptimer+1), swapped((1, 2), (2, 2), timer_add(swaptimer), time_updater((1, 2), (2, 2), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap21 = [Assigned(x, (2, 0), swaptimer) , Assigned('blank', (2, 1), swaptimer), clock(swaptimer, max_swaps)]
+        swap21 = [Assigned(x, (2, 0), swaptimer) , Assigned('blank', (2, 1), swaptimer), ~clock(swaptimer, max_swaps)]
         swap22 = [Assigned('blank', (2, 0), swaptimer+1), Assigned(x, (2, 1), swaptimer+1), swapped((2, 0), (2, 1), timer_add(swaptimer), time_updater((2, 0), (2, 1), swaptimer, E), clock_updater(E, swaptimer + 1))]
 
-        swap23 = [Assigned(x, (2, 1), swaptimer) , Assigned('blank', (2, 2), swaptimer), clock(swaptimer, max_swaps)]
+        swap23 = [Assigned(x, (2, 1), swaptimer) , Assigned('blank', (2, 2), swaptimer), ~clock(swaptimer, max_swaps)]
         swap24 = [Assigned('blank', (2, 1), swaptimer+1) , Assigned(x, (2, 2), swaptimer+1), swapped((2, 1), (2, 2), timer_add(swaptimer), time_updater((2, 1), (2, 2), swaptimer, E), clock_updater(E, swaptimer + 1))]
         
 
