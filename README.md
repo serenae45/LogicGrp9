@@ -11,6 +11,7 @@ This project was made by: Armin Heirani (20350356), Ikra Mortoza (20350748), and
 * `test.py`: Run this file to confirm that your submission has everything required. This essentially just means it will check for the right files and sufficient theory size.
 * `board.py`: The ‘board.py’ file contains a list of tuples which are the positions on the board from (0,0) to (2, 2).
 * `input_tiles.py`: The ‘input_tiles.py’ file contains a maximum number of swaps that we want the model to have (which is the minimum number of swaps required to solve the board), and a list of tiles with the same order as the list of positions in the ‘board.py’ file.
+* `run_w_clock.py`: this file was a version of the run.py file where we attempted to solve our problems in the code, however this led to the code being unsatisfiable. This file is only to show that we have attempted to solve it.
 * `main.py`: This file was used in the beggining of our project when we were trying to model swaps in code. We do not use it for the final draft of the project.
 
 ## How to run our project.
