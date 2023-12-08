@@ -52,11 +52,12 @@ class Clock(Hashable):
 @proposition(E)
 class GoalState(Hashable):
     """Represents the goal state of the board."""
-    def __init__(self) -> None:
+    def __init__(self, swaptimer) -> None:
         self.x = self
+        self.time = swaptimer
 
     def __str__(self) -> str:
-       return f"(The board is in its goal state.)"
+       return f"(The board is in its goal state at time {self.time}.)"
 
 @proposition(E)
 class Swapped(Hashable):
@@ -104,7 +105,7 @@ for pos1 in BOARD:
             for i in range(max_swaps + 1):
                 swapped_props.append(Swapped(pos1, pos2, i, board_updater(pos1, pos2, i, E), clock_updater(E, i)))
 
-w = GoalState()
+w = GoalState(swaptimer)
 
 def timer_add(time):
     """Increments swaptimer when a swap between two tiles occurs."""
@@ -173,11 +174,11 @@ def build_theory(swaptimer):
     E.add_constraint(And(
                     Assigned('1', (0, 0), max_swaps), Assigned('2', (0, 1), max_swaps), Assigned('3', (0, 2), max_swaps) , Assigned('4', (1, 0), max_swaps), 
                     Assigned('5', (1, 1), max_swaps), Assigned('6', (1, 2), max_swaps), Assigned('7', (2, 0), max_swaps), Assigned('8', (2, 1), max_swaps), 
-                    Assigned('blank', (2, 2), max_swaps)) >> w
+                    Assigned('blank', (2, 2), max_swaps), Clock(swaptimer, max_swaps)) >> w
                     )
     
     #Has to go both ways,  a win implies tiles are in correct position
-    E.add_constraint(w >> And(
+    E.add_constraint(w(swaptimer) >> And(
                     Assigned('1', (0, 0), max_swaps), Assigned('2', (0, 1), max_swaps), Assigned('3', (0, 2), max_swaps) , Assigned('4', (1, 0), max_swaps), 
                     Assigned('5', (1, 1), max_swaps), Assigned('6', (1, 2), max_swaps), Assigned('7', (2, 0), max_swaps), Assigned('8', (2, 1), max_swaps), 
                     Assigned('blank', (2, 2), max_swaps))
