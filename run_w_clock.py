@@ -109,6 +109,7 @@ for pos1 in BOARD:
                     if t1!= 'blank':
                         for i in range(max_swaps + 1):
                             swapped_props.append(Swapped(pos1, pos2, i, board_updater(t1, 'blank', pos1, pos2, i, E), clock_updater(E, i)))
+                            swapped_props.append(Swapped(pos1, pos2, i, board_updater('blank', t1, pos1, pos2, i, E), clock_updater(E, i)))
 
 
 def timer_add(time):
@@ -205,6 +206,14 @@ def build_theory(swaptimer):
                         E.add_constraint(And(swap1) >> And(swap2))
                         E.add_constraint(And(swap2) >> And(swap1))
 
+                        swapr1 = [Assigned('blank', (row, col), swaptimer), Assigned(tile, (row, col + 1), swaptimer), ~Clock(swaptimer, max_swaps)]
+                        swapr2 = [Assigned(tile, (row, col), swaptimer + 1), Assigned('blank', (row, col + 1), swaptimer + 1),
+                                Swapped((row, col), (row, col + 1), timer_add(swaptimer), board_updater(tile, 'blank', (row, col), (row, col + 1), swaptimer, E),
+                                        clock_updater(E, swaptimer + 1))]
+                        
+                        E.add_constraint(And(swapr1) >> And(swapr2))
+                        E.add_constraint(And(swapr2) >> And(swapr1))
+
                     if row + 1 < 3:  # Check if the swap is within the board bounds
                         swap3 = [Assigned(tile, (row, col), swaptimer), Assigned('blank', (row + 1, col), swaptimer), ~Clock(swaptimer, max_swaps)]
                         swap4 = [Assigned('blank', (row, col), swaptimer + 1), Assigned(tile, (row + 1, col), swaptimer + 1), Swapped((row, col), (row, col - 1), timer_add(swaptimer), board_updater('blank', tile, (row, col), (row, col - 1), swaptimer, E),
@@ -212,6 +221,13 @@ def build_theory(swaptimer):
                         
                         E.add_constraint(And(swap3) >> And(swap4))
                         E.add_constraint(And(swap4) >> And(swap3))
+
+                        swapr3 = [Assigned('blank', (row, col), swaptimer), Assigned(tile, (row + 1, col), swaptimer), ~Clock(swaptimer, max_swaps)]
+                        swapr4 = [Assigned(tile, (row, col), swaptimer + 1), Assigned('blank', (row + 1, col), swaptimer + 1), Swapped((row, col), (row, col - 1), timer_add(swaptimer), board_updater(tile, 'blank', (row, col), (row, col - 1), swaptimer, E),
+                                        clock_updater(E, swaptimer + 1))]
+                        
+                        E.add_constraint(And(swapr3) >> And(swapr4))
+                        E.add_constraint(And(swapr4) >> And(swapr3))
 
                     if col - 1 >= 0:  # Check if the swap is within the board bounds
                         swap5 = [Assigned(tile, (row, col), swaptimer), Assigned('blank', (row, col - 1), swaptimer), ~Clock(swaptimer, max_swaps)]
@@ -222,6 +238,14 @@ def build_theory(swaptimer):
                         E.add_constraint(And(swap5) >> And(swap6))
                         E.add_constraint(And(swap6) >> And(swap5))
 
+                        swapr5 = [Assigned('blank', (row, col), swaptimer), Assigned(tile, (row, col - 1), swaptimer), ~Clock(swaptimer, max_swaps)]
+                        swapr6 = [Assigned(tile, (row, col), swaptimer + 1), Assigned('blank', (row, col - 1), swaptimer + 1),
+                                Swapped((row, col), (row, col - 1), timer_add(swaptimer), board_updater(tile, 'blank', (row, col), (row, col - 1), swaptimer, E),
+                                        clock_updater(E, swaptimer + 1))]
+                        
+                        E.add_constraint(And(swapr5) >> And(swapr6))
+                        E.add_constraint(And(swapr6) >> And(swapr5))
+
                     if row - 1 >= 0:  # Check if the swap is within the board bounds
                         swap7 = [Assigned(tile, (row, col), swaptimer), Assigned('blank', (row - 1, col), swaptimer), ~Clock(swaptimer, max_swaps)]
                         swap8 = [Assigned('blank', (row, col), swaptimer + 1), Assigned(tile, (row - 1, col), swaptimer + 1),
@@ -230,6 +254,14 @@ def build_theory(swaptimer):
                         
                         E.add_constraint(And(swap7) >> And(swap8))
                         E.add_constraint(And(swap8) >> And(swap7))
+
+                        swapr7 = [Assigned('blank', (row, col), swaptimer), Assigned(tile, (row - 1, col), swaptimer), ~Clock(swaptimer, max_swaps)]
+                        swapr8 = [Assigned(tile, (row, col), swaptimer + 1), Assigned('blank', (row - 1, col), swaptimer + 1),
+                                Swapped((row, col), (row - 1, col), timer_add(swaptimer), board_updater(tile, 'blank', (row, col), (row - 1, col), swaptimer, E),
+                                        clock_updater(E, swaptimer + 1))]
+                        
+                        E.add_constraint(And(swapr7) >> And(swapr8))
+                        E.add_constraint(And(swapr8) >> And(swapr7))
 
 
     return E
