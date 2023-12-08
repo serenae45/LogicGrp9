@@ -16,7 +16,6 @@ swaptimer = 0
 #  which can then be used for indexing to initialize the board at time 0.
 board = [[TILES[0], TILES[1], TILES[2]], [TILES[3], TILES[4], TILES[5]], [TILES[6], TILES[7], TILES[8]]]
 
-
 class Hashable:
     def __hash__(self):
         return hash(str(self))
@@ -189,7 +188,7 @@ def build_theory(swaptimer):
     E.add_constraint(GoalState(swaptimer) >> And(
                     Assigned('1', (0, 0), max_swaps), Assigned('2', (0, 1), max_swaps), Assigned('3', (0, 2), max_swaps) , Assigned('4', (1, 0), max_swaps), 
                     Assigned('5', (1, 1), max_swaps), Assigned('6', (1, 2), max_swaps), Assigned('7', (2, 0), max_swaps), Assigned('8', (2, 1), max_swaps), 
-                    Assigned('blank', (2, 2), max_swaps))
+                    Assigned('blank', (2, 2), max_swaps), Clock(swaptimer, max_swaps))
                     )
     
 
@@ -212,7 +211,8 @@ def build_theory(swaptimer):
                     if row + 1 < 3:  # Check if the swap is within the board bounds
                         swap3 = [Assigned(tile, (row, col), swaptimer), Assigned('blank', (row + 1, col), swaptimer), ~Clock(swaptimer, max_swaps)]
                         swap4 = [Assigned('blank', (row, col), swaptimer + 1), Assigned(tile, (row + 1, col), swaptimer + 1),
-                                        clock_updater(E, swaptimer + 1)]
+                                Swapped((row, col), (row + 1, col), timer_add(swaptimer), board_updater('blank', tile, (row, col), (row + 1, col), swaptimer, E),
+                                        clock_updater(E, swaptimer + 1))]
                         
                         E.add_constraint(And(swap3) >> And(swap4))
                         E.add_constraint(And(swap4) >> And(swap3))
@@ -239,7 +239,6 @@ def build_theory(swaptimer):
     return E
 
 
-
 if __name__ == "__main__":
     T = build_theory(swaptimer)
     T = T.compile()
@@ -250,8 +249,8 @@ if __name__ == "__main__":
     print("   Solution: %s" % T.solve())
 
     print("\nVariable likelihoods:")
-    for v, vn in zip([GoalState(swaptimer=max_swaps), ~GoalState(swaptimer=max_swaps)], ['win', 'no win']):
-        # Ensure that you only send these functions NNF formulas
-        # Literals are compiled to NNF here
-        print(" %s: %.2f" % (vn, likelihood(T, v)))
+    # for v,vn in zip([a,b,c,x,y,z], 'abcxyz'):
+    #     # Ensure that you only send these functions NNF formulas
+    #     # Literals are compiled to NNF here
+    #     print(" %s: %.2f" % (vn, likelihood(T, v)))
     print()
