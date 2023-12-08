@@ -46,7 +46,7 @@ class clock(Hashable):
         self.swaptimer = swaptimer
     
     def __str__(self) -> str:
-        return f"(The board is at time {self.swaptimer}.)"
+        return f"(The board has reached its maximum number of swaps at time {self.swaptimer}.)"
 
 @proposition(E)
 class goal_state(Hashable):
@@ -109,8 +109,10 @@ swapped_props = []
 for pos1 in BOARD:
     for pos2 in BOARD:
         if pos1 != pos2:
-            for i in range(max_swaps + 1):
-                swapped_props.append(swapped(pos1, pos2, i, board_updater(pos1, pos2, i, E), clock_updater(E, i)))
+            for t1 in TILES:
+                    if t1!= 'blank':
+                        for i in range(max_swaps + 1):
+                            swapped_props.append(swapped(pos1, pos2, i, board_updater(t1, 'blank', pos1, pos2, i, E), clock_updater(E, i)))
 
 w = goal_state(swaptimer)
 
