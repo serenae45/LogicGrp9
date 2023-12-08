@@ -82,9 +82,6 @@ def board_updater(t1, t2, pos1, pos2, swaptimer, E):
             for tile1 in TILES:
                 if(Assigned(tile1, pos, swaptimer)):
                     E.add_constraint(Assigned(tile1, pos, swaptimer+1))
-                    for tile2 in TILES:
-                        if tile2 != tile1:
-                            E.add_constraint(~Assigned(tile2, pos, swaptimer+1))
                 else:
                     E.add_constraint(~Assigned(tile1, pos, swaptimer+1))
     return E
@@ -210,8 +207,7 @@ def build_theory(swaptimer):
 
                     if row + 1 < 3:  # Check if the swap is within the board bounds
                         swap3 = [Assigned(tile, (row, col), swaptimer), Assigned('blank', (row + 1, col), swaptimer), ~Clock(swaptimer, max_swaps)]
-                        swap4 = [Assigned('blank', (row, col), swaptimer + 1), Assigned(tile, (row + 1, col), swaptimer + 1),
-                                Swapped((row, col), (row + 1, col), timer_add(swaptimer), board_updater('blank', tile, (row, col), (row + 1, col), swaptimer, E),
+                        swap4 = [Assigned('blank', (row, col), swaptimer + 1), Assigned(tile, (row + 1, col), swaptimer + 1), Swapped((row, col), (row, col - 1), timer_add(swaptimer), board_updater('blank', tile, (row, col), (row, col - 1), swaptimer, E),
                                         clock_updater(E, swaptimer + 1))]
                         
                         E.add_constraint(And(swap3) >> And(swap4))
