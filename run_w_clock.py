@@ -10,8 +10,11 @@ config.sat_backend = "kissat"
 
 E = Encoding()
 
+# This variable keeps track of the time, which is the amount of swaps which have occured.
 swaptimer = 0
-board = [['1', '2', '3'], ['4', 'blank', '6'], ['7', '5', '8']]
+# This board variable takes all the input positions and assigns them to this list
+#  which can then be used for indexing to initialize the board at time 0.
+board = [[TILES[0], TILES[1], TILES[2]], [TILES[3], TILES[4], TILES[5]], [TILES[6], TILES[7], TILES[8]]]
 
 class Hashable:
     def __hash__(self):
@@ -110,8 +113,7 @@ def timer_add(time):
 
 
 def build_theory(swaptimer):
-    # Encoding that will store all of your constraints
-    #Construct initial board
+    '''Below the for loops initialize the board with the input tiles at time 0.'''
     for i in range(3):
         for j in range(3):
             if(board[i][j] == '1'):
