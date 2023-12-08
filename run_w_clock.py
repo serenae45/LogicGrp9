@@ -68,7 +68,7 @@ class swapped(Hashable):
         self.clock_updater = clock_updater
 
     def __str__(self) -> str:
-        return f"(The tiles at positions {self.pos1} and {self.pos2} swapped at time {self.swaptimer})"
+        return f"\n(The tiles at positions {self.pos1} and {self.pos2} swapped at time {self.swaptimer})"
 
 def board_updater(pos1, pos2, swaptimer, E):
     """Updates the time based on tile positions after a swap."""
@@ -225,8 +225,6 @@ def build_theory(swaptimer):
                         
                         E.add_constraint(And(swap7) >> And(swap8))
                         E.add_constraint(And(swap8) >> And(swap7))
-
-
 
 
     return E
